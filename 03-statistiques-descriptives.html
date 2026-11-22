@@ -1,0 +1,1610 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.11.9">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>4&nbsp; Statistiques descriptives – Isolement des communes françaises</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./04-facteurs-isolement.html" rel="next">
+<link href="./02-code.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-6c0e92cf298b34d9dd862c5af3dd7c1a.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-dfd56d404b54236e8b03ee5d76eee70e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Pas de résultats",
+    "search-matching-documents-text": "documents trouvés",
+    "search-copy-link-title": "Copier le lien vers la recherche",
+    "search-hide-matches-text": "Cacher les correspondances additionnelles",
+    "search-more-match-text": "correspondance de plus dans ce document",
+    "search-more-matches-text": "correspondances de plus dans ce document",
+    "search-clear-button-title": "Effacer",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Annuler",
+    "search-submit-button-title": "Envoyer",
+    "search-label": "Recherche"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar docked quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Aller au contenu principal</a>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" aria-label="Barre d'outils">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="Fil d'Ariane"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03-statistiques-descriptives.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Statistiques descriptives</span></a></li></ol></nav>
+        <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Recherche" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto" aria-label="Site web">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Isolement des communes françaises</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/Sarahlaure/Projet-de-python-_-Isolement-communes" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Recherche"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Isolement des communes françaises</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-donnees-methodologie.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Données et méthodologie</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-code.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Le code</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-statistiques-descriptives.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Statistiques descriptives</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-facteurs-isolement.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Facteurs de l’isolement</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-typologie.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Typologie des communes</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-discussion-conclusion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Discussion et conclusion</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-controls="quarto-sidebar-section-1" aria-expanded="false">
+ <span class="menu-text" id="quarto-sidebar-section-1-label">Appendices</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-1" aria-labelledby="quarto-sidebar-section-1-label" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./A-types-bpe.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dictionnaire des types BPE</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./B-depot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Organisation du dépôt et reproduction</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C-glossaire.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Glossaire</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bibliographie</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
+    <h2 id="toc-title">Dans ce chapitre</h2>
+   
+  <ul>
+  <li><a href="#sec-base-communes" id="toc-sec-base-communes" class="nav-link active" data-scroll-target="#sec-base-communes"><span class="header-section-number">1</span> La base des communes</a></li>
+  <li><a href="#sec-distances-service" id="toc-sec-distances-service" class="nav-link" data-scroll-target="#sec-distances-service"><span class="header-section-number">2</span> Les distances par service</a>
+  <ul class="collapse">
+  <li><a href="#quels-services-sont-présents" id="toc-quels-services-sont-présents" class="nav-link" data-scroll-target="#quels-services-sont-présents">Quels services sont présents ?</a></li>
+  <li><a href="#quelle-distance-pour-chaque-service" id="toc-quelle-distance-pour-chaque-service" class="nav-link" data-scroll-target="#quelle-distance-pour-chaque-service">Quelle distance pour chaque service ?</a></li>
+  <li><a href="#la-distribution-des-distances-hypothèse-h1" id="toc-la-distribution-des-distances-hypothèse-h1" class="nav-link" data-scroll-target="#la-distribution-des-distances-hypothèse-h1">La distribution des distances (hypothèse H1)</a></li>
+  </ul></li>
+  <li><a href="#sec-population-eloignee" id="toc-sec-population-eloignee" class="nav-link" data-scroll-target="#sec-population-eloignee"><span class="header-section-number">3</span> La population éloignée</a></li>
+  <li><a href="#sec-indice-resultats" id="toc-sec-indice-resultats" class="nav-link" data-scroll-target="#sec-indice-resultats"><span class="header-section-number">4</span> L’indice et les communes les plus isolées</a>
+  <ul class="collapse">
+  <li><a href="#la-distribution-de-lindice" id="toc-la-distribution-de-lindice" class="nav-link" data-scroll-target="#la-distribution-de-lindice">La distribution de l’indice</a></li>
+  <li><a href="#les-vingt-communes-les-plus-isolées" id="toc-les-vingt-communes-les-plus-isolées" class="nav-link" data-scroll-target="#les-vingt-communes-les-plus-isolées">Les vingt communes les plus isolées</a></li>
+  </ul></li>
+  <li><a href="#sec-cartes" id="toc-sec-cartes" class="nav-link" data-scroll-target="#sec-cartes"><span class="header-section-number">5</span> Les cartes</a>
+  <ul class="collapse">
+  <li><a href="#la-carte-de-lindice" id="toc-la-carte-de-lindice" class="nav-link" data-scroll-target="#la-carte-de-lindice">La carte de l’indice</a></li>
+  <li><a href="#les-cartes-par-service" id="toc-les-cartes-par-service" class="nav-link" data-scroll-target="#les-cartes-par-service">Les cartes par service</a></li>
+  </ul></li>
+  <li><a href="#sec-robustesse-resultats" id="toc-sec-robustesse-resultats" class="nav-link" data-scroll-target="#sec-robustesse-resultats"><span class="header-section-number">6</span> Robustesse de l’indice</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/Sarahlaure/Projet-de-python-_-Isolement-communes/blob/main/03-statistiques-descriptives.qmd" class="toc-action"><i class="bi bi-github"></i>Voir la source</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content" tabindex="-1">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-descriptives" class="quarto-section-identifier"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Statistiques descriptives</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Ce chapitre décrit nos données avant de chercher à les expliquer. Nous partons de la base des communes, puis nous regardons les distances service par service, la part de la population concernée par l’éloignement, la distribution de l’indice et les communes les plus isolées, avant de passer aux cartes et à la robustesse de l’indice. Toutes les distances sont calculées avec la règle de référence (service présent, distance 0), sauf mention contraire.</p>
+<section id="sec-base-communes" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="sec-base-communes"><span class="header-section-number">1</span> La base des communes</h2>
+<p>Nous résumons d’abord les trois variables qui décrivent chaque commune : la population, la surface et la densité (<a href="#tbl-base" class="quarto-xref">tableau&nbsp;<span>1</span></a>). Nous affichons la moyenne, l’écart-type, le minimum, le maximum, la médiane et quelques centiles. Quand la moyenne est très différente de la médiane, quelques communes très grandes ou très peuplées tirent la moyenne vers le haut.</p>
+<div id="tbl-base" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-base-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;1: Population, surface et densité des 34 788 communes
+</figcaption>
+<div aria-describedby="tbl-base-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th style="text-align: right;">Moyenne</th>
+<th style="text-align: right;">Écart-type</th>
+<th style="text-align: right;">Min.</th>
+<th style="text-align: right;">10 %</th>
+<th style="text-align: right;">25 %</th>
+<th style="text-align: right;">Médiane</th>
+<th style="text-align: right;">75 %</th>
+<th style="text-align: right;">90 %</th>
+<th style="text-align: right;">Max.</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Population (habitants)</td>
+<td style="text-align: right;">1 902</td>
+<td style="text-align: right;">8 727</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">101</td>
+<td style="text-align: right;">197</td>
+<td style="text-align: right;">457</td>
+<td style="text-align: right;">1 167</td>
+<td style="text-align: right;">3 193</td>
+<td style="text-align: right;">514 819</td>
+</tr>
+<tr class="even">
+<td>Surface (km²)</td>
+<td style="text-align: right;">15,8</td>
+<td style="text-align: right;">17,3</td>
+<td style="text-align: right;">0,0</td>
+<td style="text-align: right;">4,2</td>
+<td style="text-align: right;">6,5</td>
+<td style="text-align: right;">11,0</td>
+<td style="text-align: right;">19,0</td>
+<td style="text-align: right;">31,8</td>
+<td style="text-align: right;">757,1</td>
+</tr>
+<tr class="odd">
+<td>Densité (hab./km²)</td>
+<td style="text-align: right;">184,4</td>
+<td style="text-align: right;">979,8</td>
+<td style="text-align: right;">0,0</td>
+<td style="text-align: right;">9,7</td>
+<td style="text-align: right;">18,2</td>
+<td style="text-align: right;">40,4</td>
+<td style="text-align: right;">97,3</td>
+<td style="text-align: right;">253,8</td>
+<td style="text-align: right;">37 846,8</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>La population moyenne d’une commune est d’environ 1 900 habitants (66,2 millions d’habitants pour 34 788 communes), mais la médiane n’est que de 457 habitants. La France compte beaucoup de très petites communes et quelques très grandes villes, qui tirent la moyenne vers le haut : 52,5 % des communes ont moins de 500 habitants, et une commune sur dix a moins de 101 habitants. La plus peuplée dépasse 514 000 habitants. C’est pour cette raison que nous regarderons toujours les médianes et les quantiles, et pas seulement les moyennes.</p>
+<p>La densité est encore plus étalée : la médiane est de 40 habitants par km² pour une moyenne de 184, et le maximum atteint près de 37 800 habitants par km². Une commune sur dix a moins de 10 habitants par km². Quant à l’équipement, 10 806 communes (31,1 %) n’ont aucun équipement du panier. Ce sont de petites communes, pour lesquelles les 19 distances seront toutes positives.</p>
+</section>
+<section id="sec-distances-service" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="sec-distances-service"><span class="header-section-number">2</span> Les distances par service</h2>
+<section id="quels-services-sont-présents" class="level3">
+<h3 class="anchored" data-anchor-id="quels-services-sont-présents">Quels services sont présents ?</h3>
+<p>Avant de regarder les distances, nous regardons combien de communes possèdent chaque service (colonne « Communes équipées » du <a href="#tbl-distances-service" class="quarto-xref">tableau&nbsp;<span>2</span></a>). Les services du quotidien sont les plus répandus : l’école (61,0 % des communes), la poste (39,7 %) et la boulangerie (36,3 %). Les services rares sont dans très peu de communes : la maternité (1,1 %), les urgences (1,6 %), le lycée (4,3 %) et la gare (7,4 %). Aucun service n’est à 0 % ni à 100 %, ce qui montre que le panier est cohérent : chaque service existe quelque part, et aucun n’est partout.</p>
+</section>
+<section id="quelle-distance-pour-chaque-service" class="level3">
+<h3 class="anchored" data-anchor-id="quelle-distance-pour-chaque-service">Quelle distance pour chaque service ?</h3>
+<p>Le <a href="#tbl-distances-service" class="quarto-xref">tableau&nbsp;<span>2</span></a> donne, pour chaque service, la part de communes équipées, la médiane, la moyenne, le 90ᵉ et le 99ᵉ centile (la distance au-delà de laquelle se trouvent les 10 % et les 1 % de communes les plus éloignées) et le maximum. Les services sont classés par distance médiane décroissante.</p>
+<div id="tbl-distances-service" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-distances-service-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;2: Distance au service le plus proche, par service
+</figcaption>
+<div aria-describedby="tbl-distances-service-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Service</th>
+<th style="text-align: right;">Communes équipées (%)</th>
+<th style="text-align: right;">Médiane (km)</th>
+<th style="text-align: right;">Moyenne (km)</th>
+<th style="text-align: right;">90ᵉ centile</th>
+<th style="text-align: right;">99ᵉ centile</th>
+<th style="text-align: right;">Maximum</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>maternité</td>
+<td style="text-align: right;">1,1</td>
+<td style="text-align: right;">17,99</td>
+<td style="text-align: right;">19,08</td>
+<td style="text-align: right;">32,81</td>
+<td style="text-align: right;">46,93</td>
+<td style="text-align: right;">79,08</td>
+</tr>
+<tr class="even">
+<td>urgences</td>
+<td style="text-align: right;">1,6</td>
+<td style="text-align: right;">14,04</td>
+<td style="text-align: right;">14,75</td>
+<td style="text-align: right;">25,10</td>
+<td style="text-align: right;">34,75</td>
+<td style="text-align: right;">53,05</td>
+</tr>
+<tr class="odd">
+<td>lycée</td>
+<td style="text-align: right;">4,3</td>
+<td style="text-align: right;">9,66</td>
+<td style="text-align: right;">10,47</td>
+<td style="text-align: right;">18,91</td>
+<td style="text-align: right;">27,69</td>
+<td style="text-align: right;">42,12</td>
+</tr>
+<tr class="even">
+<td>gare</td>
+<td style="text-align: right;">7,4</td>
+<td style="text-align: right;">8,35</td>
+<td style="text-align: right;">10,16</td>
+<td style="text-align: right;">21,11</td>
+<td style="text-align: right;">33,82</td>
+<td style="text-align: right;">63,82</td>
+</tr>
+<tr class="odd">
+<td>proximité sociale</td>
+<td style="text-align: right;">7,2</td>
+<td style="text-align: right;">7,09</td>
+<td style="text-align: right;">7,73</td>
+<td style="text-align: right;">14,17</td>
+<td style="text-align: right;">21,63</td>
+<td style="text-align: right;">42,71</td>
+</tr>
+<tr class="even">
+<td>France Services</td>
+<td style="text-align: right;">7,1</td>
+<td style="text-align: right;">6,28</td>
+<td style="text-align: right;">6,43</td>
+<td style="text-align: right;">10,79</td>
+<td style="text-align: right;">15,26</td>
+<td style="text-align: right;">24,64</td>
+</tr>
+<tr class="odd">
+<td>santé de proximité</td>
+<td style="text-align: right;">9,9</td>
+<td style="text-align: right;">5,92</td>
+<td style="text-align: right;">6,29</td>
+<td style="text-align: right;">11,34</td>
+<td style="text-align: right;">17,80</td>
+<td style="text-align: right;">28,51</td>
+</tr>
+<tr class="even">
+<td>collège</td>
+<td style="text-align: right;">11,1</td>
+<td style="text-align: right;">5,43</td>
+<td style="text-align: right;">5,66</td>
+<td style="text-align: right;">10,10</td>
+<td style="text-align: right;">15,67</td>
+<td style="text-align: right;">35,19</td>
+</tr>
+<tr class="odd">
+<td>dentiste</td>
+<td style="text-align: right;">16,8</td>
+<td style="text-align: right;">4,87</td>
+<td style="text-align: right;">5,15</td>
+<td style="text-align: right;">9,97</td>
+<td style="text-align: right;">15,76</td>
+<td style="text-align: right;">26,76</td>
+</tr>
+<tr class="even">
+<td>petite enfance</td>
+<td style="text-align: right;">18,9</td>
+<td style="text-align: right;">4,68</td>
+<td style="text-align: right;">5,06</td>
+<td style="text-align: right;">10,19</td>
+<td style="text-align: right;">16,51</td>
+<td style="text-align: right;">25,14</td>
+</tr>
+<tr class="odd">
+<td>personnes âgées</td>
+<td style="text-align: right;">20,0</td>
+<td style="text-align: right;">4,05</td>
+<td style="text-align: right;">4,05</td>
+<td style="text-align: right;">7,67</td>
+<td style="text-align: right;">11,80</td>
+<td style="text-align: right;">35,36</td>
+</tr>
+<tr class="even">
+<td>pharmacie</td>
+<td style="text-align: right;">23,3</td>
+<td style="text-align: right;">3,85</td>
+<td style="text-align: right;">3,79</td>
+<td style="text-align: right;">7,38</td>
+<td style="text-align: right;">11,07</td>
+<td style="text-align: right;">18,93</td>
+</tr>
+<tr class="odd">
+<td>médecin</td>
+<td style="text-align: right;">25,3</td>
+<td style="text-align: right;">3,66</td>
+<td style="text-align: right;">3,62</td>
+<td style="text-align: right;">7,26</td>
+<td style="text-align: right;">10,89</td>
+<td style="text-align: right;">21,05</td>
+</tr>
+<tr class="even">
+<td>kinésithérapeute</td>
+<td style="text-align: right;">27,7</td>
+<td style="text-align: right;">3,45</td>
+<td style="text-align: right;">3,51</td>
+<td style="text-align: right;">7,31</td>
+<td style="text-align: right;">11,88</td>
+<td style="text-align: right;">21,01</td>
+</tr>
+<tr class="odd">
+<td>alimentation</td>
+<td style="text-align: right;">29,8</td>
+<td style="text-align: right;">3,18</td>
+<td style="text-align: right;">3,13</td>
+<td style="text-align: right;">6,54</td>
+<td style="text-align: right;">9,93</td>
+<td style="text-align: right;">17,07</td>
+</tr>
+<tr class="even">
+<td>infirmier</td>
+<td style="text-align: right;">33,6</td>
+<td style="text-align: right;">2,87</td>
+<td style="text-align: right;">2,88</td>
+<td style="text-align: right;">6,30</td>
+<td style="text-align: right;">9,88</td>
+<td style="text-align: right;">19,88</td>
+</tr>
+<tr class="odd">
+<td>boulangerie</td>
+<td style="text-align: right;">36,3</td>
+<td style="text-align: right;">2,63</td>
+<td style="text-align: right;">2,63</td>
+<td style="text-align: right;">5,89</td>
+<td style="text-align: right;">9,38</td>
+<td style="text-align: right;">20,42</td>
+</tr>
+<tr class="even">
+<td>poste</td>
+<td style="text-align: right;">39,7</td>
+<td style="text-align: right;">2,40</td>
+<td style="text-align: right;">2,25</td>
+<td style="text-align: right;">5,07</td>
+<td style="text-align: right;">7,50</td>
+<td style="text-align: right;">13,10</td>
+</tr>
+<tr class="odd">
+<td>école</td>
+<td style="text-align: right;">61,0</td>
+<td style="text-align: right;">0,00</td>
+<td style="text-align: right;">1,38</td>
+<td style="text-align: right;">4,33</td>
+<td style="text-align: right;">7,06</td>
+<td style="text-align: right;">15,96</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>Les services se rangent en trois groupes.</p>
+<ul>
+<li>Les services rares sont loin partout. La médiane est de 18,0 km pour la maternité, 14,0 km pour les urgences, 9,7 km pour le lycée et 8,4 km pour la gare. Pour la maternité, 10 % des communes sont à plus de 32,8 km, et la plus éloignée est à 79,1 km.</li>
+<li>Les services du quotidien sont proches de presque tout le monde : médiane de 2,4 km pour la poste, 2,6 km pour la boulangerie et 2,9 km pour l’infirmier.</li>
+<li>L’école est un cas à part : 61 % des communes en ont une, donc la médiane est 0, alors que la moyenne est de 1,4 km. C’est le seul service où la moyenne est nettement au-dessus de la médiane.</li>
+</ul>
+</section>
+<section id="la-distribution-des-distances-hypothèse-h1" class="level3">
+<h3 class="anchored" data-anchor-id="la-distribution-des-distances-hypothèse-h1">La distribution des distances (hypothèse H1)</h3>
+<p>L’hypothèse H1 disait que les distances sont très asymétriques, avec une minorité de communes très éloignées. Si c’était le cas, la moyenne serait nettement plus grande que la médiane, tirée vers le haut par quelques valeurs extrêmes. Or, pour presque tous les services, la médiane et la moyenne sont très proches : 3,85 et 3,79 km pour la pharmacie, 18,0 et 19,1 km pour la maternité. La distribution des distances est donc assez resserrée, sans longue queue. Le maximum vaut entre 4 et 9 fois la médiane selon le service (4,4 fois pour la maternité), l’école mise à part : il y a bien des communes très éloignées, mais elles sont peu nombreuses. L’hypothèse H1 n’est donc pas confirmée.</p>
+<p>La <a href="#fig-boxplot" class="quarto-xref">figure&nbsp;<span>1</span></a> montre ces distributions sous forme de boîtes à moustaches, sur l’échelle <span class="math inline">\(\ln(1+d)\)</span>, avec les services classés par médiane. La ligne centrale de chaque boîte est la médiane, la boîte va du premier au troisième quartile, et les points sont les cas qui sortent des moustaches. Pour les services rares (maternité, urgences, lycée, collège…), les points isolés à gauche correspondent aux communes qui possèdent le service : leur distance est 0, donc très loin de la boîte. Les rares points à droite (proximité sociale, France Services, santé de proximité) sont des communes particulièrement éloignées.</p>
+<div id="fig-boxplot" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Boîtes à moustaches des distances par service, classées par médiane décroissante, de la maternité en haut à l'école en bas">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-boxplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/boites_distances.png" class="img-fluid figure-img" style="width:85.0%" alt="Boîtes à moustaches des distances par service, classées par médiane décroissante, de la maternité en haut à l'école en bas">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-boxplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Distance au service le plus proche, par service (échelle ln(1 + d))
+</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="sec-population-eloignee" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="sec-population-eloignee"><span class="header-section-number">3</span> La population éloignée</h2>
+<p>Jusqu’ici, nous avons compté des communes. Or ce qui nous intéresse vraiment, ce sont les habitants. La France compte énormément de petites communes très peu peuplées : dire que beaucoup de communes sont loin d’un service donne l’impression d’un problème massif, alors qu’elles peuvent ne regrouper qu’une petite partie de la population.</p>
+<p>Nous additionnons donc la population des communes situées à plus de 5, 10 ou 20 km d’un service, et nous la rapportons à la population totale. Le <a href="#tbl-pop-eloignee" class="quarto-xref">tableau&nbsp;<span>3</span></a> donne la part des habitants concernés. Par exemple, 53,07 % des habitants vivent dans une commune dont le centre est à plus de 5 km d’une maternité. Une commune équipée a une distance de 0 : elle n’est jamais comptée comme éloignée. Les seuils de 5, 10 et 20 km sont un choix arbitraire que l’on peut modifier.</p>
+<div id="tbl-pop-eloignee" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-pop-eloignee-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;3: Part de la population (%) vivant dans une commune à plus de 5, 10 ou 20 km d’un service
+</figcaption>
+<div aria-describedby="tbl-pop-eloignee-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Service</th>
+<th style="text-align: right;">&gt; 5 km</th>
+<th style="text-align: right;">&gt; 10 km</th>
+<th style="text-align: right;">&gt; 20 km</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>maternité</td>
+<td style="text-align: right;">53,07</td>
+<td style="text-align: right;">35,80</td>
+<td style="text-align: right;">13,87</td>
+</tr>
+<tr class="even">
+<td>urgences</td>
+<td style="text-align: right;">48,56</td>
+<td style="text-align: right;">29,48</td>
+<td style="text-align: right;">7,03</td>
+</tr>
+<tr class="odd">
+<td>lycée</td>
+<td style="text-align: right;">32,69</td>
+<td style="text-align: right;">15,21</td>
+<td style="text-align: right;">1,72</td>
+</tr>
+<tr class="even">
+<td>France Services</td>
+<td style="text-align: right;">29,92</td>
+<td style="text-align: right;">5,68</td>
+<td style="text-align: right;">0,03</td>
+</tr>
+<tr class="odd">
+<td>gare</td>
+<td style="text-align: right;">29,91</td>
+<td style="text-align: right;">14,24</td>
+<td style="text-align: right;">3,59</td>
+</tr>
+<tr class="even">
+<td>proximité sociale</td>
+<td style="text-align: right;">27,46</td>
+<td style="text-align: right;">9,26</td>
+<td style="text-align: right;">0,50</td>
+</tr>
+<tr class="odd">
+<td>santé de proximité</td>
+<td style="text-align: right;">21,17</td>
+<td style="text-align: right;">4,45</td>
+<td style="text-align: right;">0,12</td>
+</tr>
+<tr class="even">
+<td>collège</td>
+<td style="text-align: right;">15,79</td>
+<td style="text-align: right;">1,87</td>
+<td style="text-align: right;">0,03</td>
+</tr>
+<tr class="odd">
+<td>dentiste</td>
+<td style="text-align: right;">10,96</td>
+<td style="text-align: right;">1,65</td>
+<td style="text-align: right;">0,01</td>
+</tr>
+<tr class="even">
+<td>petite enfance</td>
+<td style="text-align: right;">10,37</td>
+<td style="text-align: right;">1,89</td>
+<td style="text-align: right;">0,03</td>
+</tr>
+<tr class="odd">
+<td>personnes âgées</td>
+<td style="text-align: right;">7,60</td>
+<td style="text-align: right;">0,38</td>
+<td style="text-align: right;">0,01</td>
+</tr>
+<tr class="even">
+<td>pharmacie</td>
+<td style="text-align: right;">5,65</td>
+<td style="text-align: right;">0,19</td>
+<td style="text-align: right;">0,00</td>
+</tr>
+<tr class="odd">
+<td>médecin</td>
+<td style="text-align: right;">5,35</td>
+<td style="text-align: right;">0,21</td>
+<td style="text-align: right;">0,01</td>
+</tr>
+<tr class="even">
+<td>kinésithérapeute</td>
+<td style="text-align: right;">4,80</td>
+<td style="text-align: right;">0,30</td>
+<td style="text-align: right;">0,00</td>
+</tr>
+<tr class="odd">
+<td>alimentation</td>
+<td style="text-align: right;">3,78</td>
+<td style="text-align: right;">0,08</td>
+<td style="text-align: right;">0,00</td>
+</tr>
+<tr class="even">
+<td>infirmier</td>
+<td style="text-align: right;">2,85</td>
+<td style="text-align: right;">0,09</td>
+<td style="text-align: right;">0,00</td>
+</tr>
+<tr class="odd">
+<td>boulangerie</td>
+<td style="text-align: right;">2,24</td>
+<td style="text-align: right;">0,05</td>
+<td style="text-align: right;">0,00</td>
+</tr>
+<tr class="even">
+<td>poste</td>
+<td style="text-align: right;">1,32</td>
+<td style="text-align: right;">0,01</td>
+<td style="text-align: right;">0,00</td>
+</tr>
+<tr class="odd">
+<td>école</td>
+<td style="text-align: right;">0,46</td>
+<td style="text-align: right;">0,00</td>
+<td style="text-align: right;">0,00</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>Ce tableau change le regard par rapport aux distances par commune. Les services rares touchent beaucoup d’habitants : 53,1 % de la population vit à plus de 5 km d’une maternité (35,8 % à plus de 10 km et 13,9 % à plus de 20 km), 48,6 % à plus de 5 km des urgences et 32,7 % à plus de 5 km d’un lycée. À l’inverse, pour les services du quotidien, très peu d’habitants sont concernés : 0,46 % pour l’école, 1,3 % pour la poste et 2,2 % pour la boulangerie à plus de 5 km. Le seuil de 20 km distingue bien les services : seuls la maternité (13,9 %), les urgences (7,0 %), la gare (3,6 %) et le lycée (1,7 %) concernent plus de 1 % de la population à cette distance. Pour tous les autres, personne ou presque n’est à plus de 20 km.</p>
+<p>Deux biais sont à garder en tête.</p>
+<ul>
+<li>Tous les habitants d’une commune sont supposés vivre à son centre : ils reçoivent donc la même distance au service. Dans une grande commune, certains habitants vivent près de l’équipement et d’autres bien plus loin, et l’erreur peut aller dans les deux sens selon les communes.</li>
+<li>Toute la population est comptée pour chaque service, alors que tous les habitants n’ont pas besoin de tous les services : les enfants pour l’école, les femmes en âge d’avoir un enfant pour la maternité, les personnes âgées pour l’hébergement. Les pourcentages mesurent donc la population exposée à l’éloignement d’un service, et pas le nombre de personnes qui en auraient réellement besoin. Avec la population par âge et par sexe de chaque commune, on pourrait affiner ce calcul dans un prolongement du projet.</li>
+</ul>
+</section>
+<section id="sec-indice-resultats" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="sec-indice-resultats"><span class="header-section-number">4</span> L’indice et les communes les plus isolées</h2>
+<section id="la-distribution-de-lindice" class="level3">
+<h3 class="anchored" data-anchor-id="la-distribution-de-lindice">La distribution de l’indice</h3>
+<p>Nous calculons maintenant l’indice d’isolement avec la règle de référence (service présent, distance 0) et les poids égaux. Le <a href="#tbl-indices" class="quarto-xref">tableau&nbsp;<span>4</span></a> résume les quatre indices correspondant aux quatre jeux de poids. Les trois premiers ont une moyenne nulle et un écart-type proche de 0,7, qui est plus petit que 1 parce que nous faisons la moyenne de <span class="math inline">\(z\)</span> qui sont corrélés entre eux. L’indice <code>acp</code> est sur une autre échelle (écart-type de 3,1) : ce n’est pas un problème, puisque nous ne comparons que des classements.</p>
+<div id="tbl-indices" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-indices-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;4: Les quatre indices (moyenne nulle pour chacun)
+</figcaption>
+<div aria-describedby="tbl-indices-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th style="text-align: right;">Écart-type</th>
+<th style="text-align: right;">Min.</th>
+<th style="text-align: right;">25 %</th>
+<th style="text-align: right;">Médiane</th>
+<th style="text-align: right;">75 %</th>
+<th style="text-align: right;">Max.</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>egaux</code></td>
+<td style="text-align: right;">0,712</td>
+<td style="text-align: right;">−2,160</td>
+<td style="text-align: right;">−0,414</td>
+<td style="text-align: right;">0,161</td>
+<td style="text-align: right;">0,522</td>
+<td style="text-align: right;">1,786</td>
+</tr>
+<tr class="even">
+<td><code>vitaux</code></td>
+<td style="text-align: right;">0,715</td>
+<td style="text-align: right;">−2,309</td>
+<td style="text-align: right;">−0,413</td>
+<td style="text-align: right;">0,166</td>
+<td style="text-align: right;">0,522</td>
+<td style="text-align: right;">1,816</td>
+</tr>
+<tr class="odd">
+<td><code>themes</code></td>
+<td style="text-align: right;">0,702</td>
+<td style="text-align: right;">−2,086</td>
+<td style="text-align: right;">−0,410</td>
+<td style="text-align: right;">0,129</td>
+<td style="text-align: right;">0,516</td>
+<td style="text-align: right;">1,706</td>
+</tr>
+<tr class="even">
+<td><code>acp</code></td>
+<td style="text-align: right;">3,131</td>
+<td style="text-align: right;">−8,968</td>
+<td style="text-align: right;">−1,852</td>
+<td style="text-align: right;">0,752</td>
+<td style="text-align: right;">2,299</td>
+<td style="text-align: right;">7,842</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>La première composante de l’ACP explique 51,6 % de la variance des 19 <span class="math inline">\(z\)</span>. C’est beaucoup pour une seule composante : cela veut dire que les 19 distances évoluent ensemble, une commune éloignée d’un service a tendance à être éloignée des autres aussi. C’est ce qui justifie de les résumer en un seul indice.</p>
+<p>Pour l’indice de référence (<code>egaux</code>), les quantiles sont les suivants : 1 % de communes sous −1,94, 10 % sous −1,07, la moitié sous 0,16, 90 % sous 0,78 et 99 % sous 1,19. La <a href="#fig-histogramme" class="quarto-xref">figure&nbsp;<span>2</span></a> montre la distribution : elle n’est pas symétrique. La médiane (0,16) est au-dessus de la moyenne (0), et la queue est plus longue du côté des indices négatifs (minimum de −2,16 contre un maximum de 1,79). Autrement dit, la majorité des communes sont un peu plus isolées que la moyenne, et une minorité de communes très bien desservies, les villes, tirent la moyenne vers le bas. Le petit pic à −2,16 correspond aux communes qui ont les 19 services sur place : elles ont toutes le même indice, le minimum.</p>
+<div id="fig-histogramme" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Histogramme de l'indice d'isolement : distribution asymétrique, pic autour de 0,4, longue queue vers les valeurs négatives et petit pic à −2,16">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-histogramme-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/histogramme_indice.png" class="img-fluid figure-img" style="width:80.0%" alt="Histogramme de l'indice d'isolement : distribution asymétrique, pic autour de 0,4, longue queue vers les valeurs négatives et petit pic à −2,16">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-histogramme-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Distribution de l’indice d’isolement (poids égaux)
+</figcaption>
+</figure>
+</div>
+<p>59,0 % des communes ont un indice supérieur à 0, c’est-à-dire qu’elles sont plus isolées que la commune moyenne. Mais elles ne regroupent que 9,9 % de la population. Les communes isolées sont donc nombreuses mais peu peuplées, alors que les 41 % de communes mieux desservies (les villes et leurs environs) regroupent 90 % des habitants.</p>
+</section>
+<section id="les-vingt-communes-les-plus-isolées" class="level3">
+<h3 class="anchored" data-anchor-id="les-vingt-communes-les-plus-isolées">Les vingt communes les plus isolées</h3>
+<p>Le <a href="#tbl-top20" class="quarto-xref">tableau&nbsp;<span>5</span></a> donne les 20 communes ou arrondissements à l’indice le plus élevé.</p>
+<div id="tbl-top20" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-top20-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;5: Les 20 communes à l’indice d’isolement le plus élevé
+</figcaption>
+<div aria-describedby="tbl-top20-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Code</th>
+<th>Commune</th>
+<th style="text-align: right;">Population</th>
+<th style="text-align: right;">Surface (km²)</th>
+<th style="text-align: right;">Indice</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>64542</td>
+<td>Urdos</td>
+<td style="text-align: right;">71</td>
+<td style="text-align: right;">36,7</td>
+<td style="text-align: right;">1,786</td>
+</tr>
+<tr class="even">
+<td>2B153</td>
+<td>Manso</td>
+<td style="text-align: right;">116</td>
+<td style="text-align: right;">121,3</td>
+<td style="text-align: right;">1,762</td>
+</tr>
+<tr class="odd">
+<td>64136</td>
+<td>Borce</td>
+<td style="text-align: right;">112</td>
+<td style="text-align: right;">58,3</td>
+<td style="text-align: right;">1,692</td>
+</tr>
+<tr class="even">
+<td>05064</td>
+<td>La Chapelle-en-Valgaudémar</td>
+<td style="text-align: right;">120</td>
+<td style="text-align: right;">127,5</td>
+<td style="text-align: right;">1,579</td>
+</tr>
+<tr class="odd">
+<td>09100</td>
+<td>Couflens</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">56,4</td>
+<td style="text-align: right;">1,554</td>
+</tr>
+<tr class="even">
+<td>38375</td>
+<td>Saint-Christophe-en-Oisans</td>
+<td style="text-align: right;">99</td>
+<td style="text-align: right;">237,5</td>
+<td style="text-align: right;">1,536</td>
+</tr>
+<tr class="odd">
+<td>21237</td>
+<td>Échalot</td>
+<td style="text-align: right;">93</td>
+<td style="text-align: right;">27,7</td>
+<td style="text-align: right;">1,536</td>
+</tr>
+<tr class="even">
+<td>64316</td>
+<td>Larrau</td>
+<td style="text-align: right;">179</td>
+<td style="text-align: right;">127,0</td>
+<td style="text-align: right;">1,529</td>
+</tr>
+<tr class="odd">
+<td>51371</td>
+<td>Moivre</td>
+<td style="text-align: right;">54</td>
+<td style="text-align: right;">22,2</td>
+<td style="text-align: right;">1,527</td>
+</tr>
+<tr class="even">
+<td>40169</td>
+<td>Maillas</td>
+<td style="text-align: right;">125</td>
+<td style="text-align: right;">63,3</td>
+<td style="text-align: right;">1,515</td>
+</tr>
+<tr class="odd">
+<td>51292</td>
+<td>Herpont</td>
+<td style="text-align: right;">121</td>
+<td style="text-align: right;">23,0</td>
+<td style="text-align: right;">1,505</td>
+</tr>
+<tr class="even">
+<td>66102</td>
+<td>Mantet</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">32,2</td>
+<td style="text-align: right;">1,504</td>
+</tr>
+<tr class="odd">
+<td>43054</td>
+<td>Chanaleilles</td>
+<td style="text-align: right;">173</td>
+<td style="text-align: right;">48,5</td>
+<td style="text-align: right;">1,498</td>
+</tr>
+<tr class="even">
+<td>21489</td>
+<td>Poiseul-la-Grange</td>
+<td style="text-align: right;">75</td>
+<td style="text-align: right;">23,1</td>
+<td style="text-align: right;">1,488</td>
+</tr>
+<tr class="odd">
+<td>2A197</td>
+<td>Osani</td>
+<td style="text-align: right;">96</td>
+<td style="text-align: right;">51,7</td>
+<td style="text-align: right;">1,486</td>
+</tr>
+<tr class="even">
+<td>51549</td>
+<td>Somme-Yèvre</td>
+<td style="text-align: right;">106</td>
+<td style="text-align: right;">21,6</td>
+<td style="text-align: right;">1,479</td>
+</tr>
+<tr class="odd">
+<td>2A196</td>
+<td>Orto</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">16,1</td>
+<td style="text-align: right;">1,475</td>
+</tr>
+<tr class="even">
+<td>21063</td>
+<td>Beneuvre</td>
+<td style="text-align: right;">94</td>
+<td style="text-align: right;">15,5</td>
+<td style="text-align: right;">1,474</td>
+</tr>
+<tr class="odd">
+<td>40161</td>
+<td>Lubbon</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">48,2</td>
+<td style="text-align: right;">1,473</td>
+</tr>
+<tr class="even">
+<td>51470</td>
+<td>Rouvroy-Ripont</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">11,7</td>
+<td style="text-align: right;">1,472</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>Ce sont de très petites communes (de 5 à 179 habitants), souvent sur de grandes surfaces. Elles se trouvent dans les Pyrénées (Urdos, Borce, Larrau, Couflens, Mantet), dans les Alpes (La Chapelle-en-Valgaudémar, Saint-Christophe-en-Oisans), en Corse (Manso, Osani, Orto), dans le Massif central (Chanaleilles), dans les Landes (Maillas, Lubbon), dans la Côte-d’Or (Échalot, Poiseul-la-Grange, Beneuvre) et dans les plaines de Champagne (Moivre, Herpont, Somme-Yèvre, Rouvroy-Ripont). C’est un profil attendu, car très peu d’habitants signifie aussi très peu d’équipements sur place. L’indice ne dit pas en revanche que ces communes sont « mal » desservies au sens de la qualité de vie : il dit qu’elles sont, relativement aux autres, loin des 19 services.</p>
+</section>
+</section>
+<section id="sec-cartes" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="sec-cartes"><span class="header-section-number">5</span> Les cartes</h2>
+<section id="la-carte-de-lindice" class="level3">
+<h3 class="anchored" data-anchor-id="la-carte-de-lindice">La carte de l’indice</h3>
+<p>La <a href="#fig-carte-indice" class="quarto-xref">figure&nbsp;<span>3</span></a> représente l’indice de chaque commune, du clair (proche des services) au foncé (isolée). L’échelle de couleurs est bornée entre les centiles 2 et 98, pour que quelques valeurs extrêmes n’écrasent pas toutes les couleurs.</p>
+<div id="fig-carte-indice" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Carte de la France métropolitaine colorée selon l'indice d'isolement des communes, du jaune clair au rouge foncé">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-carte-indice-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/carte_indice.png" class="img-fluid figure-img" style="width:90.0%" alt="Carte de la France métropolitaine colorée selon l'indice d'isolement des communes, du jaune clair au rouge foncé">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-carte-indice-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Isolement des communes de France métropolitaine (indice de référence)
+</figcaption>
+</figure>
+</div>
+<p>Les communes les plus foncées ne sont pas dispersées au hasard : elles forment de grandes zones. On voit les Alpes, les Pyrénées, la Corse, le sud-ouest (Landes), le Massif central et une large bande qui va de la Champagne à la Bourgogne. À l’inverse, les points clairs sont les grandes villes (Paris, Lyon, Bordeaux, Toulouse, Marseille…) et leurs environs, ainsi que le littoral atlantique et la Bretagne, mieux desservis. Nous n’avons pas fait de test statistique pour ce regroupement : cette lecture reste visuelle.</p>
+</section>
+<section id="les-cartes-par-service" class="level3">
+<h3 class="anchored" data-anchor-id="les-cartes-par-service">Les cartes par service</h3>
+<p>L’indice résume 19 services, mais deux communes de même indice peuvent manquer de services très différents. La <a href="#fig-cartes-services" class="quarto-xref">figure&nbsp;<span>4</span></a> montre la distance à six services : la pharmacie, le médecin, la boulangerie, l’école, les urgences et la gare. Chaque carte a sa propre échelle de couleurs, bornée au 98ᵉ centile, car les distances d’une gare et d’une boulangerie n’ont pas la même ampleur.</p>
+<div id="fig-cartes-services" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Six cartes de la France : pharmacie, médecin, boulangerie, école, urgences et gare, colorées selon la distance au service">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cartes-services-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/cartes_services.png" class="img-fluid figure-img" style="width:100.0%" alt="Six cartes de la France : pharmacie, médecin, boulangerie, école, urgences et gare, colorées selon la distance au service">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cartes-services-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Distance au service le plus proche, <span class="math inline">\(\ln(1+d)\)</span>, pour six services
+</figcaption>
+</figure>
+</div>
+<p>Les cartes ne se ressemblent pas, ce qui est cohérent avec les médianes du <a href="#tbl-distances-service" class="quarto-xref">tableau&nbsp;<span>2</span></a>. Pour la pharmacie, le médecin et la boulangerie, la plupart des communes sont proches et seules les zones de montagne (Alpes, Pyrénées, Corse) et les campagnes du centre ressortent. Pour l’école, presque tout le territoire est clair, ce qui correspond à la médiane de 0. Pour les urgences et la gare, c’est l’inverse : presque tout le territoire est foncé et seules les villes ressortent en clair. Sur la carte des gares, on voit même le réseau ferré : les zones claires s’allongent le long des lignes qui partent de Paris. C’est pour cela que l’indice a besoin des 19 services : un seul service ne suffirait pas à décrire l’isolement.</p>
+</section>
+</section>
+<section id="sec-robustesse-resultats" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="sec-robustesse-resultats"><span class="header-section-number">6</span> Robustesse de l’indice</h2>
+<p>Nous avons présenté au chapitre 1 les 12 indices obtenus en croisant trois règles de distance et quatre jeux de poids. Nous comparons maintenant chacun d’eux à l’indice de référence avec la corrélation de Spearman (<a href="#tbl-robustesse" class="quarto-xref">tableau&nbsp;<span>6</span></a> et <a href="#fig-robustesse" class="quarto-xref">figure&nbsp;<span>5</span></a>). Chaque case est la corrélation entre l’indice de la case et l’indice de référence (<code>presence</code> avec <code>egaux</code>, en haut à gauche, qui vaut 1).</p>
+<div id="tbl-robustesse" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-robustesse-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;6: Corrélation de Spearman de chaque indice avec l’indice de référence
+</figcaption>
+<div aria-describedby="tbl-robustesse-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Règle de distance</th>
+<th style="text-align: right;"><code>egaux</code></th>
+<th style="text-align: right;"><code>vitaux</code></th>
+<th style="text-align: right;"><code>themes</code></th>
+<th style="text-align: right;"><code>acp</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>presence</code></td>
+<td style="text-align: right;">1,000</td>
+<td style="text-align: right;">0,996</td>
+<td style="text-align: right;">0,979</td>
+<td style="text-align: right;">0,999</td>
+</tr>
+<tr class="even">
+<td><code>sans_regle_presence</code></td>
+<td style="text-align: right;">0,963</td>
+<td style="text-align: right;">0,960</td>
+<td style="text-align: right;">0,940</td>
+<td style="text-align: right;">0,964</td>
+</tr>
+<tr class="odd">
+<td><code>positions_AB</code></td>
+<td style="text-align: right;">0,996</td>
+<td style="text-align: right;">0,991</td>
+<td style="text-align: right;">0,976</td>
+<td style="text-align: right;">0,996</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<div id="fig-robustesse" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Carte de chaleur des corrélations de Spearman entre les 12 indices et l'indice de référence, de 0,940 à 1">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-robustesse-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/robustesse_spearman.png" class="img-fluid figure-img" style="width:70.0%" alt="Carte de chaleur des corrélations de Spearman entre les 12 indices et l'indice de référence, de 0,940 à 1">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-robustesse-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Corrélation de Spearman avec l’indice de référence
+</figcaption>
+</figure>
+</div>
+<p>La première ligne (<code>presence</code>) ne change que le jeu de poids. <code>egaux</code> et <code>acp</code> sont presque identiques (0,999) : les poids que l’ACP trouve dans les données sont proches de poids égaux, ce qui s’accorde avec le fait qu’une seule composante explique 51,6 % de la variance. <code>vitaux</code> reste très proche (0,996) : doubler cinq services de santé et d’urgence change peu le classement. <code>themes</code> est le jeu le plus éloigné (0,979), ce qui est logique puisqu’il réduit fortement le poids de chacun des huit services de santé et augmente celui de la gare.</p>
+<p>La colonne <code>egaux</code> ne change que la règle de distance. Ne garder que les positions de qualité A et B donne 0,996 : les coordonnées de moindre qualité ne faussent pas le classement. C’est le résultat qui nous intéresse pour la fiabilité des données, car il nous dit que le classement ne dépend pas des équipements mal localisés. La règle <code>sans_regle_presence</code> donne 0,963 : c’est le changement isolé qui modifie le plus le classement, plus que les poids. C’est cohérent, car c’est le seul qui change la définition même de la distance : une commune qui possède un service n’est plus à distance 0, mais à distance de son centre à l’équipement le plus proche.</p>
+<p>Les cases qui combinent les deux changements restent proches elles aussi. Sur la ligne <code>positions_AB</code>, les corrélations vont de 0,976 à 0,996. Sur la ligne <code>sans_regle_presence</code>, elles vont de 0,940 à 0,964. La corrélation la plus faible avec la référence est 0,940 (<code>sans_regle_presence</code> avec <code>themes</code>), et la plus faible entre deux des 12 indices est 0,928. Toutes les valeurs sont donc supérieures à 0,9 : le classement des communes ne dépend pas beaucoup de nos choix de méthode, et l’hypothèse H4 est confirmée. Nous gardons <code>presence</code> avec <code>egaux</code> comme indice de référence, car c’est le plus simple à expliquer.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copié");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copié");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      const newWindowLabel = "(opens in a new tab)";
+      const newWindowNoteId = "quarto-ext-newwindow-label";
+      // Links reference one hidden label through aria-describedby, so the
+      // announcement never changes their accessible name.
+      var describeNewWindow = (link) => {
+        if (!window.document.getElementById(newWindowNoteId)) {
+          var newWindowNote = window.document.createElement("span");
+          newWindowNote.id = newWindowNoteId;
+          newWindowNote.hidden = true;
+          newWindowNote.textContent = newWindowLabel;
+          window.document.body.appendChild(newWindowNote);
+        }
+        var describedBy = (link.getAttribute("aria-describedby") || "").split(/\s+/).filter(Boolean);
+        if (!describedBy.includes(newWindowNoteId)) {
+          describedBy.push(newWindowNoteId);
+          link.setAttribute("aria-describedby", describedBy.join(" "));
+        }
+      }
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            describeNewWindow(link);
+          if (!link.classList.contains('no-external-icon')) {
+          }
+        }
+      }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
+          if (lineIds.length > 0) {
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            placeBand(gutterDiv, el, lastEl);
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Code défilable","output":"Sortie défilable"};
+  </script>
+<nav class="page-navigation" aria-label="Page">
+  <div class="nav-page nav-page-previous">
+      <a href="./02-code.html" class="pagination-link" aria-label="Le code">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Le code</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./04-facteurs-isolement.html" class="pagination-link" aria-label="Facteurs de l'isolement">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Facteurs de l’isolement</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/Sarahlaure/Projet-de-python-_-Isolement-communes/blob/main/03-statistiques-descriptives.qmd" class="toc-action"><i class="bi bi-github"></i>Voir la source</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
