@@ -1,0 +1,58 @@
+# Organisation du dépôt et reproduction {#sec-annexe-depot .unnumbered}
+
+## Organisation du dépôt
+
+```
+isolement-communes/
+├── README.md
+├── requirements.txt        bibliothèques nécessaires
+├── rapport.ipynb           le rapport : appelle src/ et raconte l'analyse
+├── src/
+│   ├── download.py         télécharge les fichiers INSEE dans data/raw/
+│   ├── inspect_bpe.py      inspecte la BPE (colonnes, codes du panier)
+│   ├── prepare_bpe.py      filtre la BPE sur le panier, écrit data/interim/
+│   ├── communes.py         table des communes (centre, surface, population)
+│   ├── distances.py        présence des services et distances
+│   ├── indice.py           indice d'isolement
+│   ├── descriptif.py       statistiques descriptives
+│   └── analyse.py          revenu, corrélations, tests, typologie
+├── tests/                  tests automatiques (pytest)
+├── docs/                   guide des données et organisation du travail
+└── data/
+    ├── raw/                données brutes, jamais modifiées (non versionnées)
+    ├── interim/            données nettoyées (non versionnées)
+    └── processed/          tableaux finaux, une ligne par commune (non versionnés)
+```
+
+Les données brutes ne sont pas versionnées car les fichiers sont lourds. Le fichier `BPE25.parquet` fait 163 Mo.
+
+## Reproduire les résultats
+
+Il faut Python 3.10 ou plus.
+
+```bash
+# 1. Récupérer le code
+git clone https://github.com/Sarahlaure/Projet-de-python-_-Isolement-communes.git
+cd Projet-de-python-_-Isolement-communes
+
+# 2. Créer un environnement et installer les dépendances
+python -m venv .venv
+source .venv/bin/activate          # Windows : .venv\Scripts\activate
+pip install -r requirements.txt
+
+# 3. Télécharger les données INSEE (data/raw/)
+python src/download.py
+#    puis placer à la main dans data/raw/ : population, contours IGN, Filosofi
+
+# 4. Nettoyer la BPE (data/interim/equipements.parquet)
+python src/prepare_bpe.py
+
+# 5. Ouvrir le rapport et tout exécuter (Run All)
+jupyter lab
+```
+
+Les tests se lancent avec la commande `pytest`.
+
+## Reconstruire ce site
+
+Ce site est construit avec Quarto. Depuis le dossier du livre, `quarto preview` l'affiche en local et `quarto render` produit le site dans `_book/`. Les chapitres contiennent du texte et des extraits de code figés : les figures sont des images produites par le notebook et rangées dans `figures/`.

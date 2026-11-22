@@ -1,0 +1,230 @@
+# Données et méthodologie {#sec-donnees-methodologie}
+
+Ce chapitre présente d'où viennent nos données, comment nous les avons préparées et comment nous passons de la position des équipements à un indice d'isolement par commune. Les parties qui suivent reprennent l'ordre du traitement : les sources, les services retenus, la préparation, le calcul des distances, la construction de l'indice, les tests de robustesse, puis les outils statistiques utilisés dans la suite du rapport.
+
+## Les sources {#sec-sources}
+
+Nous croisons quatre sources, toutes issues de l'INSEE ou de l'IGN et diffusées en données ouvertes (@tbl-sources).
+
+| Source | Contenu | Ce que nous en tirons |
+|---|---|---|
+| BPE 2025 (INSEE) | un équipement par ligne, avec son type, sa commune et ses coordonnées | la position des services, donc les distances |
+| Admin Express, édition COG 2025 (IGN) | contours des communes et des arrondissements municipaux | le centre et la surface de chaque commune, les cartes |
+| Population municipale 2023 (INSEE) | nombre d'habitants de chaque commune | la densité et la part de la population éloignée d'un service |
+| Filosofi, niveau de vie médian (INSEE) | indicateur `MED_SL` par commune | le lien entre isolement et revenu |
+
+: Les sources de données {#tbl-sources}
+
+### La Base permanente des équipements
+
+La BPE recense les équipements et services accessibles au public sur le territoire : commerces, santé, enseignement, services publics, transports, sport, culture… Nous utilisons le fichier détail de l'édition 2025 [@insee_bpe_2025], au format parquet. Il contient 2 921 770 lignes et 95 colonnes, une ligne par équipement. Quatre colonnes nous intéressent surtout :
+
+- `TYPEQU`, le code du type d'équipement (par exemple `D265` pour un médecin généraliste) ;
+- `DEPCOM`, le code de la commune où se trouve l'équipement ;
+- `LAMBERT_X` et `LAMBERT_Y`, ses coordonnées en mètres dans le système Lambert-93 (`EPSG` = 2154), le système de projection de la France métropolitaine ;
+- `QUALITE_XY`, la qualité de la géolocalisation (`A` et `B` pour les meilleures positions, `M` pour une position moyenne, `_U` et `_Z` quand la qualité est inconnue ou sans objet).
+
+L'INSEE fournit aussi la documentation de ce fichier : la liste des types d'équipements (`TYPEQU_2025.csv`), le dessin du fichier (la liste de ses colonnes), le dictionnaire des variables et des modalités, et une table de passage qui range chaque type dans un domaine et un sous-domaine. Nous les téléchargeons en même temps que la BPE.
+
+### Les contours des communes
+
+Les contours viennent d'Admin Express, le fichier de référence de l'IGN pour les limites administratives, dans l'édition qui correspond au code officiel géographique (COG) au 1er janvier 2025 [@ign_adminexpress]. Le fichier est un GeoPackage qui contient plusieurs couches. Nous utilisons deux d'entre elles : `commune` et `arrondissement_municipal`. Nous en tirons pour chaque commune un point de départ pour les distances (le centre du polygone), sa surface, et les polygones qui servent à dessiner les cartes.
+
+### La population et le revenu
+
+La population est la population municipale 2023 de l'INSEE, en géographie 2025 [@insee_population_reference]. La population municipale compte les personnes qui ont leur résidence habituelle dans la commune. Nous la préférons à la population totale, qui ajoute la « population comptée à part » (par exemple des étudiants dont la famille habite ailleurs) : en additionnant des communes, on compterait certaines personnes deux fois.
+
+Le revenu est le niveau de vie médian de chaque commune (indicateur `MED_SL` de Filosofi, édition 2023) [@insee_filosofi]. Le fichier est en format long, avec une ligne par couple (territoire, indicateur) et tous les niveaux géographiques mélangés. De plus, pour protéger les données personnelles, l'INSEE ne publie pas l'indicateur pour certaines communes (secret statistique) : nous y reviendrons au [chapitre 4](#sec-facteurs).
+
+### Un téléchargement reproductible
+
+Le script `download.py` télécharge automatiquement les cinq fichiers de la BPE (le fichier détail et sa documentation), dans le dossier `data/raw/`. Ainsi, n'importe qui peut repartir de zéro et retrouver les mêmes données. Pour les trois autres sources (contours, population, revenu), nous avons placé les fichiers à la main dans `data/raw/` : le script indique où les trouver et signale s'ils manquent. Le détail du script est au [chapitre 2](#sec-code).
+
+## Les services retenus {#sec-services}
+
+### Du type d'équipement au service
+
+La BPE décrit des centaines de types d'équipements. Notre panier en retient 33, que nous regroupons en 19 services. Un service correspond à un besoin d'habitant : faire ses courses, se soigner, scolariser un enfant, envoyer un colis… Quand plusieurs types répondent au même besoin, nous les regroupons, et une commune est considérée comme équipée dès qu'elle possède au moins un des types du service. Une école maternelle, une école primaire et une école élémentaire forment ainsi un seul service, « école ».
+
+Dix services correspondent à un seul type (@tbl-services-simples).
+
+| Service | Type | Libellé BPE |
+|---|---|---|
+| boulangerie | B207 | boulangerie-pâtisserie |
+| pharmacie | D307 | pharmacie |
+| medecin | D265 | médecin généraliste |
+| dentiste | D277 | chirurgien-dentiste |
+| kine | D279 | masseur-kinésithérapeute |
+| infirmier | D281 | infirmier |
+| urgences | D106 | urgences |
+| maternite | D107 | maternité |
+| college | C201 | collège |
+| france_services | A128 | France Services |
+
+: Services qui correspondent à un seul type d'équipement {#tbl-services-simples}
+
+Les neuf autres regroupent plusieurs types (@tbl-services-groupes).
+
+| Service | Types regroupés | Pourquoi les regrouper |
+|---|---|---|
+| alimentation | B201 supérette, B202 épicerie, B105 supermarché et multi-commerce | trois formats pour faire ses courses de base |
+| sante_proximite | D108 centre de santé, D113 maison de santé pluridisciplinaire | deux structures de soins de premier recours |
+| ecole | C107 maternelle, C108 primaire, C109 élémentaire | même besoin : scolariser un jeune enfant |
+| lycee | C301 général et technologique, C302 professionnel | même niveau d'enseignement |
+| poste | A206 bureau de poste, A207 relais poste, A208 agence postale | trois formes de présence postale |
+| petite_enfance | D502 accueil du jeune enfant, D509 micro-crèche | même besoin : faire garder un enfant |
+| personnes_agees | D401 hébergement, D402 soins à domicile, D403 aide à domicile | trois formes de prise en charge des personnes âgées |
+| proximite_sociale | D506 centres sociaux, D508 espaces de vie sociale | deux lieux d'accueil social local |
+| gare | E107 nationale, E108 régionale, E109 locale | même besoin : prendre le train |
+
+: Services qui regroupent plusieurs types d'équipements {#tbl-services-groupes}
+
+Le médecin, le dentiste, le kinésithérapeute et l'infirmier restent séparés. Ce sont des soins différents, qu'un habitant ne remplace pas l'un par l'autre.
+
+### Cinq thèmes
+
+Nous rangeons aussi les 19 services en cinq thèmes, qui servent pour un des jeux de poids (section [Les jeux de poids](#sec-poids)) : les commerces (boulangerie, alimentation), la santé (pharmacie, médecin, dentiste, kinésithérapeute, infirmier, santé de proximité, urgences, maternité), l'enseignement (école, collège, lycée), les services publics (poste, France Services, petite enfance, personnes âgées, proximité sociale) et le transport (gare). La santé compte donc 8 services sur 19, soit 42 % d'un indice où tous les services pèsent pareil. C'est une des raisons pour lesquelles nous testons des poids différents.
+
+## Préparation des données {#sec-preparation}
+
+### Nettoyage de la BPE
+
+Nous réduisons la BPE aux équipements dont nous avons besoin, en trois filtres. Nous gardons d'abord la France métropolitaine, c'est-à-dire les lignes dont les coordonnées sont en Lambert-93 : les départements d'outre-mer utilisent d'autres systèmes de coordonnées, qu'on ne peut pas mélanger. Nous gardons ensuite les 33 types du panier et nous rangeons chacun dans son service. Enfin, nous gardons seulement six colonnes (`depcom`, `service`, `typequ`, `x`, `y`, `qualite_xy`).
+
+Un choix mérite d'être signalé : nous conservons les équipements sans coordonnées. On ne peut pas calculer de distance à partir d'eux, mais ils indiquent qu'une commune possède bien le service. Si nous les écartions, certaines communes seraient déclarées sans service alors qu'elles en ont un. Le fichier obtenu compte 531 417 équipements.
+
+### La table des communes
+
+Chaque commune a besoin d'un point de départ pour les distances, d'une surface et d'une population. Nous les construisons à partir des contours. Le centre d'une commune est le centroïde de son polygone, en mètres Lambert-93, et sa surface est l'aire de ce polygone.
+
+Il y a une difficulté avec Paris, Lyon et Marseille. La BPE range leurs équipements par arrondissement municipal : une boulangerie du 3ᵉ arrondissement de Marseille a pour code `13203`. La couche `commune` contient ces trois villes d'un seul tenant (codes `75056`, `69123` et `13055`), et si on les gardait, on trouverait 0 équipement pour elles. Nous retirons donc ces trois villes et nous ajoutons à leur place leurs 45 arrondissements (20 à Paris, 9 à Lyon, 16 à Marseille). Nous retirons aussi l'outre-mer (codes qui commencent par `97` ou `98`).
+
+Notre base compte ainsi 34 788 lignes. Ce nombre est cohérent avec celui de l'INSEE, qui compte 34 746 communes en métropole en géographie 2025 : 34 746 − 3 + 45 = 34 788. Nous appelons « communes » ces 34 788 unités, en précisant qu'il s'agit parfois d'arrondissements.
+
+Nous joignons ensuite la population municipale 2023 à cette base par une jointure à gauche sur le code commune, après avoir remis les codes sur cinq caractères en texte. Le zéro initial des codes est important : lu comme un nombre, `01001` deviendrait `1001` et ne se joindrait à rien. Les codes à six caractères du fichier de population sont des communes d'outre-mer, qui n'ont pas de correspondance dans notre base. La population totale de la base est de 66 165 815 habitants. La densité est la population divisée par la surface en km².
+
+### Vérifications
+
+À chaque étape, nous vérifions que rien n'a été perdu en route :
+
+- tous les codes commune de la BPE sont connus de la base ;
+- les polygones des cartes portent exactement les mêmes codes que la table des communes ;
+- 10 806 communes (31 %) n'ont aucun équipement du panier. C'est normal pour de petits villages : leurs 19 distances seront simplement positives.
+
+## Calcul des distances {#sec-distances}
+
+### La règle
+
+Pour chaque commune et chaque service, nous calculons une distance en kilomètres. La règle de référence est la suivante :
+
+1. si la commune possède au moins un équipement du service, la distance vaut 0 ;
+2. sinon, la distance est celle à vol d'oiseau entre le centre de la commune et l'équipement le plus proche qui a des coordonnées, même s'il est dans une commune voisine.
+
+On ne garde que la plus petite des distances : on ne fait ni somme ni moyenne sur les équipements. En coordonnées Lambert-93, la distance entre deux points est la distance euclidienne, en mètres, que nous divisons par 1 000.
+
+*Exemple.* Prenons une commune dont le centre est en (0 ; 0) et qui ne possède pas de pharmacie. La pharmacie la plus proche est en (3 000 ; 4 000), l'autre en (10 000 ; 0). Les deux distances sont $\sqrt{3000^2 + 4000^2} = 5\,000$ m et 10 000 m. La distance de la commune à la pharmacie est donc de 5 km. Si la commune possédait une pharmacie, la distance serait de 0 km, quelles que soient les autres.
+
+### Pourquoi cette règle, et ses limites
+
+Nous avons choisi cette règle parce qu'une commune qui possède le service n'a pas à se déplacer, au moins pour les habitants qui vivent près du centre. Elle a toutefois une limite : dans une grande commune, l'équipement peut être loin du centre, alors que la règle donne 0. C'est pourquoi nous testons, dans la section [Tester la solidité de l'indice](#sec-robustesse), une règle qui ne met jamais 0.
+
+Plus largement, notre distance est à vol d'oiseau : elle ne tient compte ni des routes, ni du relief, ni des horaires. Elle suppose aussi que tous les habitants d'une commune vivent à son centre. Ces limites sont discutées au [chapitre 6](#sec-conclusion).
+
+### Un calcul rapide
+
+Comparer chacune des 34 788 communes avec chacun des quelque 550 000 équipements représenterait près de 20 milliards de calculs de distance. Nous utilisons à la place un arbre k-d [@bentley1975], implémenté dans `cKDTree` de SciPy [@virtanen2020]. Cette structure range les points dans l'espace en les découpant successivement en deux, ce qui permet de trouver le plus proche voisin sans tout comparer. Pour chacun des 19 services, on construit un arbre avec les équipements du service, puis on l'interroge avec le centre de chaque commune.
+
+## L'indice d'isolement {#sec-indice}
+
+Nous disposons à présent de 19 distances par commune, que nous voulons résumer en un seul chiffre. Nous ne pouvons pas additionner directement les kilomètres : un service rare comme la maternité a de grandes distances partout, et écraserait un service fréquent comme l'infirmier, dont les distances sont toutes petites. Le calcul se fait en trois étapes.
+
+### Étape 1 : le logarithme
+
+On remplace chaque distance $d$ (en km) par
+
+$$d' = \ln(1 + d)$$ {#eq-log}
+
+Le logarithme atténue les grandes distances : passer de 1 à 2 km compte davantage que passer de 50 à 51 km. Le « +1 » permet de traiter les distances nulles (service présent), car $\ln(0)$ n'existe pas : $\ln(1+0) = 0$. Par exemple, 0 km donne 0, 3 km donne $\ln 4 \approx 1{,}39$, et 18 km donne $\ln 19 \approx 2{,}94$.
+
+### Étape 2 : la standardisation
+
+Pour chaque service, nous calculons la moyenne et l'écart-type de $d'$ sur l'ensemble des communes, puis nous retranchons la moyenne et divisons par l'écart-type :
+
+$$z = \frac{d' - \bar{d'}}{\sigma}$$ {#eq-z}
+
+Chaque service est ainsi ramené à la même échelle (moyenne 0, écart-type 1). Un $z$ de +1 veut dire « un écart-type plus loin que la moyenne des communes pour ce service », et un $z$ négatif « plus proche que la moyenne ».
+
+*Exemple fictif.* Supposons que pour la pharmacie, $\bar{d'} = 1{,}2$ et $\sigma = 0{,}7$. Une commune dont la distance transformée est $d' = 1{,}9$ a $z = (1{,}9 - 1{,}2)/0{,}7 = 1$. Pour la maternité, avec $\bar{d'} = 2{,}8$ et $\sigma = 0{,}6$, une distance transformée de 2,2 donne $z = -1$. Sans standardisation, la distance à la maternité aurait toujours paru plus grande que celle à la pharmacie ; avec, on compare chaque commune aux autres, service par service.
+
+Ce choix a une conséquence : l'indice mesure l'isolement relatif d'une commune par rapport aux autres communes, et pas un niveau absolu. Chaque commune compte pour une unité dans le calcul de la moyenne et de l'écart-type, quelle que soit sa population.
+
+### Étape 3 : la moyenne pondérée
+
+L'indice d'une commune est la moyenne pondérée de ses 19 valeurs de $z$ :
+
+$$I = \frac{\sum_{k=1}^{19} w_k \, z_k}{\sum_{k=1}^{19} w_k}$$ {#eq-indice}
+
+où $w_k$ est le poids du service $k$. Plus l'indice est élevé, plus la commune est isolée. Diviser par la somme des poids garde la même échelle quel que soit le jeu de poids.
+
+### Les jeux de poids {#sec-poids}
+
+Le choix des poids est un choix de jugement : tous les services ne se valent pas aux yeux de chacun. Plutôt que d'en retenir un seul, nous en comparons quatre (@tbl-poids).
+
+| Jeu | Définition | Question à laquelle il répond |
+|---|---|---|
+| `egaux` | tous les services pèsent 1 | c'est l'indice de référence |
+| `vitaux` | urgences, maternité, médecin, pharmacie et santé de proximité comptent double | et si les soins de premier recours et urgents pesaient plus ? |
+| `themes` | chaque thème pèse autant | et si la santé, avec ses 8 services, ne dominait pas ? |
+| `acp` | première composante principale des 19 $z$ | que dit la structure des données elle-même ? |
+
+: Les quatre jeux de poids {#tbl-poids}
+
+Pour `themes`, le poids d'un service est l'inverse du nombre de services de son thème. Les deux services de commerces pèsent 1/2 chacun, les trois services d'enseignement 1/3, les cinq services publics 1/5, chacun des huit services de santé 1/8 (soit 0,125), et la gare, seule dans son thème, pèse 1.
+
+Pour `acp`, nous utilisons l'analyse en composantes principales (ACP). Elle cherche la combinaison des 19 $z$ qui varie le plus d'une commune à l'autre. Les poids sont donc fournis par les données elles-mêmes. Le signe de cette combinaison est arbitraire, donc nous l'orientons pour qu'un score élevé veuille dire « plus isolé » (en le comparant à l'indice à poids égaux). Comme les scores de l'ACP ne sont pas sur la même échelle que les autres indices, nous ne les comparons qu'à travers les classements.
+
+## Tester la solidité de l'indice {#sec-robustesse}
+
+Notre indice repose sur des choix que nous aurions pu faire autrement : la règle de distance, la qualité des coordonnées et les poids. Nous voulons vérifier que les résultats ne changent pas beaucoup si nous faisons d'autres choix. C'est l'objet de l'hypothèse H4.
+
+### Trois règles de distance
+
+| Règle | Ce qu'elle fait | Ce que nous testons |
+|---|---|---|
+| `presence` (référence) | distance 0 si la commune possède le service, sinon distance du centre de la commune à l'équipement le plus proche | notre règle principale |
+| `sans_regle_presence` | on ne met jamais 0 : on prend toujours la distance entre le centre de la commune et l'équipement le plus proche, même s'il est dans la commune | la règle « présent = 0 » |
+| `positions_AB` | seules les positions de qualité `A` et `B` servent aux distances (la présence n'est pas modifiée) | la fiabilité des coordonnées |
+
+: Les trois règles de distance {#tbl-regles}
+
+Combinées aux quatre jeux de poids, elles donnent $3 \times 4 = 12$ indices. L'indice de référence est celui de la règle `presence` avec les poids `egaux`.
+
+La variante `positions_AB` est importante pour juger de la fiabilité des données : toutes les positions de la BPE n'ont pas la même précision, et nous voulons savoir si les positions moins précises faussent le classement. Pour elle, seule la distance utilise le filtre sur la qualité : la présence d'un service dans une commune reste fondée sur tous les équipements, avec ou sans coordonnées.
+
+### Comparer des classements
+
+Nous comparons les indices par la corrélation de Spearman, qui compare les classements des communes. Pour chaque indice, on classe les communes de la plus isolée à la moins isolée, puis on mesure la corrélation entre les deux classements. Elle vaut 1 si les deux indices classent les communes dans le même ordre, et −1 s'ils les classent en sens inverse. On considère en général qu'une valeur supérieure à 0,9 indique des classements très proches. Il ne s'agit pas d'un test statistique : nous comparons des variantes d'un même calcul, pas des échantillons. Les résultats sont présentés dans la section [Robustesse de l'indice](#sec-robustesse-resultats) du chapitre 3.
+
+## Outils statistiques {#sec-outils}
+
+Cette partie présente les méthodes que nous utilisons dans les chapitres suivants, pour que le lecteur puisse comprendre les résultats sans connaître les outils.
+
+### La corrélation de Spearman
+
+La corrélation de Pearson mesure une relation en ligne droite entre deux variables. Quand une variable est très asymétrique, comme la densité (quelques arrondissements parisiens ont plus de 30 000 habitants par km², la médiane des communes est de 40), quelques valeurs extrêmes peuvent dominer le calcul. La corrélation de Spearman [@spearman1904] remplace chaque valeur par son rang (la 1ʳᵉ, la 2ᵉ, la 3ᵉ…) puis calcule la corrélation de Pearson sur les rangs. Elle ne dépend ni de l'échelle ni des valeurs extrêmes, et elle détecte toute relation qui va toujours dans le même sens, droite ou courbe.
+
+*Exemple.* Prenons cinq communes dont les densités sont 5, 20, 80, 300 et 20 000 habitants par km², et dont les indices sont 1,2 ; 0,6 ; 0,1 ; −0,5 et −2,0. Les rangs de densité sont 1, 2, 3, 4, 5 ; ceux de l'indice (du plus faible au plus fort) sont 5, 4, 3, 2, 1. Les deux classements sont exactement inversés : ρ = −1, même si la relation n'est pas une droite.
+
+Le coefficient ρ vaut entre −1 et +1. Avec 34 000 communes, la p-value est minuscule pour presque n'importe quel lien : nous regardons donc surtout la valeur de ρ.
+
+### Le test de Kruskal-Wallis et sa taille d'effet
+
+Pour comparer une variable entre plusieurs groupes (par exemple l'indice dans cinq classes de densité), nous utilisons le test de Kruskal-Wallis [@kruskal1952]. C'est l'équivalent, sur les rangs, d'une analyse de variance : il regarde si la variable est distribuée de la même façon dans tous les groupes. Comme la p-value est presque toujours minuscule sur de grands échantillons, nous regardons aussi une taille d'effet, $\varepsilon^2 = H/(n-1)$ [@tomczak2014], où $H$ est la statistique du test et $n$ le nombre d'observations. Elle va de 0 à 1 et dit si l'écart est grand : un $\varepsilon^2$ de 0,3 voudrait dire que l'appartenance au groupe explique environ 30 % de la variation des rangs.
+
+### Les quintiles
+
+Nous découpons souvent une variable (densité, revenu) en cinq classes de même effectif, les quintiles : les 20 % de communes les moins denses, les 20 % suivantes, et ainsi de suite. Cela permet de comparer des groupes de même taille sans être gênés par les valeurs extrêmes.
+
+### La typologie : k-means et ACP
+
+Pour regrouper les communes selon leur profil d'éloignement, nous utilisons la méthode des k-means [@macqueen1967]. Chaque commune est décrite par ses 19 valeurs de $z$. On fixe le nombre de groupes $k$, puis l'algorithme répète deux étapes : rattacher chaque commune au centre de groupe le plus proche, puis recalculer chaque centre comme la moyenne des communes de son groupe, jusqu'à ce que plus rien ne bouge. Pour choisir $k$, nous regardons l'inertie (la somme des carrés des écarts aux centres, qui baisse toujours quand $k$ augmente, et dont on cherche le « coude ») et la silhouette [@rousseeuw1987], qui va de −1 à 1 et mesure si les groupes sont bien séparés. L'ACP sert seulement à dessiner les groupes dans un plan à deux dimensions. Le détail est au [chapitre 5](#sec-typologie).

@@ -1,0 +1,58 @@
+---
+title: ""
+page-layout: full
+toc: false
+number-sections: false
+title-block-style: none
+---
+
+::: {.cover-top}
+![](images/logo_ensae.png){fig-alt="Logos de l'ENSAE Paris, IP Paris et de l'Université Paris-Saclay"}
+
+::: {.cours}
+Python pour la data science<br>2ᵉ année
+:::
+:::
+
+::: {.cover}
+# Isolement des communes françaises {.cover-title .unnumbered .unlisted}
+
+::: {.cover-subtitle}
+Mesure des distances aux services de base et cartographie
+:::
+
+::: {.cover-question}
+À quelle distance de chez soi trouve-t-on les services du quotidien, et quelles communes sont les plus éloignées de tout ?
+:::
+:::
+
+::: {.team}
+::: {.team-card}
+<span class="nom">FOGWOUNG DJOUFACK</span><br>
+<span class="prenom">Sarah-Laure</span><br>
+[github.com/Sarahlaure](https://github.com/Sarahlaure)
+:::
+::: {.team-card}
+<span class="nom">NGUEMFOUO NGOUMTSA</span><br>
+<span class="prenom">Célina</span><br>
+[github.com/nncelina](https://github.com/nncelina)
+:::
+::: {.team-card}
+<span class="nom">ZAGHROUN</span><br>
+<span class="prenom">Eytan</span><br>
+[github.com/Eytan-ZG](https://github.com/Eytan-ZG)
+:::
+:::
+
+::: {.cover-meta}
+<div>Chargé de TD : <strong>M. DEREPAS Alban</strong></div>
+<a class="btn-depot" href="https://github.com/Sarahlaure/Projet-de-python-_-Isolement-communes">Dépôt GitHub ›</a>
+:::
+
+## Résumé {.unnumbered .unlisted}
+
+Ce rapport mesure l'éloignement des communes de France métropolitaine aux services de base. À partir de la Base permanente des équipements (BPE) 2025 de l'INSEE, nous calculons pour 34 788 communes et arrondissements municipaux la distance à vol d'oiseau jusqu'au plus proche de 19 services (boulangerie, pharmacie, médecin, école, poste, gare, urgences, maternité…), puis nous résumons ces distances dans un indice d'isolement.
+
+L'indice est stable : la corrélation de Spearman entre 12 variantes de calcul (3 règles de distance et 4 jeux de poids) reste comprise entre 0,94 et 1 par rapport à la référence. Les communes les plus isolées sont très nombreuses (59 % ont un indice supérieur à la moyenne) mais peu peuplées (9,9 % de la population). L'isolement est fortement lié à la faible densité de population (ρ de Spearman = −0,84) et très faiblement au revenu médian (ρ = −0,22), un lien qui disparaît presque lorsqu'on compare des communes de même densité. Une typologie en quatre groupes distingue des pôles très bien desservis, des communes bien desservies pour le quotidien mais moyennement pour les services rares, des communes dans la moyenne et un rural isolé.
+
+*Mots-clés : isolement, services de base, accessibilité, communes, BPE, indice synthétique, typologie.*
