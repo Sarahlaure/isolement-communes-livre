@@ -1,6 +1,6 @@
 # Données et méthodologie {#sec-donnees-methodologie}
 
-Ce chapitre présente d'où viennent nos données, comment nous les avons préparées et comment nous passons de la position des équipements à un indice d'isolement par commune. Les parties qui suivent reprennent l'ordre du traitement : les sources, les services retenus, la préparation, le calcul des distances, la construction de l'indice, les tests de robustesse, puis les outils statistiques utilisés dans la suite du rapport.
+Ce chapitre présente d'où viennent nos données, comment nous les avons préparées et comment nous passons de la position des équipements à un indice d'isolement par commune. Les parties qui suivent reprennent l'ordre du traitement : les sources, les services retenus, la préparation, le calcul des distances, la construction de l'indice, les trois méthodes que nous comparons, les tests de robustesse, puis les outils statistiques utilisés dans la suite du rapport.
 
 ## Les sources {#sec-sources}
 
@@ -9,7 +9,7 @@ Nous croisons quatre sources, toutes issues de l'INSEE ou de l'IGN et diffusées
 | Source | Contenu | Ce que nous en tirons |
 |---|---|---|
 | BPE 2025 (INSEE) | un équipement par ligne, avec son type, sa commune et ses coordonnées | la position des services, donc les distances |
-| Admin Express, édition COG 2025 (IGN) | contours des communes et des arrondissements municipaux | le centre et la surface de chaque commune, les cartes |
+| Admin Express, édition COG 2025 (IGN) | contours des communes et des arrondissements municipaux, position des chefs-lieux | les deux points de départ (centroïde et chef-lieu), la surface, les cartes |
 | Population municipale 2023 (INSEE) | nombre d'habitants de chaque commune | la densité et la part de la population éloignée d'un service |
 | Filosofi, niveau de vie médian (INSEE) | indicateur `MED_SL` par commune | le lien entre isolement et revenu |
 
@@ -17,7 +17,7 @@ Nous croisons quatre sources, toutes issues de l'INSEE ou de l'IGN et diffusées
 
 ### La Base permanente des équipements
 
-La BPE recense les équipements et services accessibles au public sur le territoire : commerces, santé, enseignement, services publics, transports, sport, culture… Nous utilisons le fichier détail de l'édition 2025 [@insee_bpe_2025], au format parquet. Il contient 2 921 770 lignes et 95 colonnes, une ligne par équipement. Quatre colonnes nous intéressent surtout :
+La BPE recense les équipements et services accessibles au public sur le territoire : commerces, santé, enseignement, services publics, transports, sport, culture… Nous utilisons le fichier détail de l'édition 2025 [@insee_bpe_2025], au format parquet. Il contient environ 2,9 millions de lignes et 95 colonnes, une ligne par équipement. Quatre colonnes nous intéressent surtout :
 
 - `TYPEQU`, le code du type d'équipement (par exemple `D265` pour un médecin généraliste) ;
 - `DEPCOM`, le code de la commune où se trouve l'équipement ;
@@ -28,7 +28,7 @@ L'INSEE fournit aussi la documentation de ce fichier : la liste des types d'équ
 
 ### Les contours des communes
 
-Les contours viennent d'Admin Express, le fichier de référence de l'IGN pour les limites administratives, dans l'édition qui correspond au code officiel géographique (COG) au 1er janvier 2025 [@ign_adminexpress]. Le fichier est un GeoPackage qui contient plusieurs couches. Nous utilisons deux d'entre elles : `commune` et `arrondissement_municipal`. Nous en tirons pour chaque commune un point de départ pour les distances (le centre du polygone), sa surface, et les polygones qui servent à dessiner les cartes.
+Les contours viennent d'Admin Express, le fichier de référence de l'IGN pour les limites administratives, dans l'édition qui correspond au code officiel géographique (COG) au 1er janvier 2025 [@ign_adminexpress]. Le fichier est un GeoPackage qui contient plusieurs couches. Nous utilisons quatre d'entre elles : `commune` et `arrondissement_municipal`, qui donnent les polygones, et `chef_lieu_de_commune` et `chef_lieu_d_arrondissement_municipal`, qui donnent la position du chef-lieu de chaque commune et de chaque arrondissement. Nous en tirons pour chaque commune deux points de départ possibles pour les distances (le centre du polygone et le chef-lieu), sa surface, et les polygones qui servent à dessiner les cartes. Le chef-lieu est le point que l'IGN place au bourg principal de la commune, en pratique près de la mairie.
 
 ### La population et le revenu
 
@@ -38,7 +38,7 @@ Le revenu est le niveau de vie médian de chaque commune (indicateur `MED_SL` de
 
 ### Un téléchargement reproductible
 
-Le script `download.py` télécharge automatiquement les cinq fichiers de la BPE (le fichier détail et sa documentation), dans le dossier `data/raw/`. Ainsi, n'importe qui peut repartir de zéro et retrouver les mêmes données. Pour les trois autres sources (contours, population, revenu), nous avons placé les fichiers à la main dans `data/raw/` : le script indique où les trouver et signale s'ils manquent. Le détail du script est au [chapitre 2](#sec-code).
+Le script `download.py` télécharge toutes les données dans le dossier `data/raw/` : les cinq fichiers de la BPE (le fichier détail et sa documentation) et les trois sources externes. Pour l'IGN, il récupère une archive `.7z` d'environ 245 Mo et la décompresse pour obtenir le GeoPackage de 1,1 Go. Pour la population, il télécharge le fichier `ensemble.xlsx` de l'INSEE, et pour le revenu, il interroge l'API Melodi de l'INSEE. Un fichier déjà présent n'est pas retéléchargé. Ainsi, n'importe qui peut repartir de zéro et retrouver les mêmes données en exécutant le notebook. Le premier lancement prend quelques minutes, car il faut télécharger environ 400 Mo. Le détail du script est au [chapitre 2](#sec-code).
 
 ## Les services retenus {#sec-services}
 
@@ -83,7 +83,7 @@ Le médecin, le dentiste, le kinésithérapeute et l'infirmier restent séparés
 
 ### Cinq thèmes
 
-Nous rangeons aussi les 19 services en cinq thèmes, qui servent pour un des jeux de poids (section [Les jeux de poids](#sec-poids)) : les commerces (boulangerie, alimentation), la santé (pharmacie, médecin, dentiste, kinésithérapeute, infirmier, santé de proximité, urgences, maternité), l'enseignement (école, collège, lycée), les services publics (poste, France Services, petite enfance, personnes âgées, proximité sociale) et le transport (gare). La santé compte donc 8 services sur 19, soit 42 % d'un indice où tous les services pèsent pareil. C'est une des raisons pour lesquelles nous testons des poids différents.
+Nous rangeons aussi les 19 services en cinq thèmes, qui servent pour un des jeux de poids (section [Tester la solidité de l'indice](#sec-robustesse)) : les commerces (boulangerie, alimentation), la santé (pharmacie, médecin, dentiste, kinésithérapeute, infirmier, santé de proximité, urgences, maternité), l'enseignement (école, collège, lycée), les services publics (poste, France Services, petite enfance, personnes âgées, proximité sociale) et le transport (gare). La santé compte donc 8 services sur 19, soit 42 % d'un indice où tous les services pèsent pareil. C'est une des raisons pour lesquelles nous testons des poids différents.
 
 ## Préparation des données {#sec-preparation}
 
@@ -95,7 +95,7 @@ Un choix mérite d'être signalé : nous conservons les équipements sans coordo
 
 ### La table des communes
 
-Chaque commune a besoin d'un point de départ pour les distances, d'une surface et d'une population. Nous les construisons à partir des contours. Le centre d'une commune est le centroïde de son polygone, en mètres Lambert-93, et sa surface est l'aire de ce polygone.
+Chaque commune a besoin d'un point de départ pour les distances, d'une surface et d'une population. Nous les construisons à partir des contours. Nous calculons pour chaque commune deux points : le centroïde de son polygone (son centre de gravité, en mètres Lambert-93), et son chef-lieu, lu dans les couches ponctuelles de l'IGN. Sa surface est l'aire du polygone.
 
 Il y a une difficulté avec Paris, Lyon et Marseille. La BPE range leurs équipements par arrondissement municipal : une boulangerie du 3ᵉ arrondissement de Marseille a pour code `13203`. La couche `commune` contient ces trois villes d'un seul tenant (codes `75056`, `69123` et `13055`), et si on les gardait, on trouverait 0 équipement pour elles. Nous retirons donc ces trois villes et nous ajoutons à leur place leurs 45 arrondissements (20 à Paris, 9 à Lyon, 16 à Marseille). Nous retirons aussi l'outre-mer (codes qui commencent par `97` ou `98`).
 
@@ -109,13 +109,14 @@ Nous joignons ensuite la population municipale 2023 à cette base par une jointu
 
 - tous les codes commune de la BPE sont connus de la base ;
 - les polygones des cartes portent exactement les mêmes codes que la table des communes ;
-- 10 806 communes (31 %) n'ont aucun équipement du panier. C'est normal pour de petits villages : leurs 19 distances seront simplement positives.
+- 10 806 communes (31 %) n'ont aucun équipement du panier. C'est normal pour de petits villages : leurs 19 distances seront simplement positives ;
+- 6 communes n'ont pas de chef-lieu dans la couche de l'IGN. Toutes sont dans la Meuse : ce sont des villages détruits pendant la bataille de Verdun et jamais reconstruits, sans habitant. Nous gardons leur centroïde.
 
 ## Calcul des distances {#sec-distances}
 
 ### La règle
 
-Pour chaque commune et chaque service, nous calculons une distance en kilomètres. La règle de référence est la suivante :
+Pour chaque commune et chaque service, nous calculons une distance en kilomètres. Voici la règle de la méthode A, que nous présentons d'abord :
 
 1. si la commune possède au moins un équipement du service, la distance vaut 0 ;
 2. sinon, la distance est celle à vol d'oiseau entre le centre de la commune et l'équipement le plus proche qui a des coordonnées, même s'il est dans une commune voisine.
@@ -126,13 +127,13 @@ On ne garde que la plus petite des distances : on ne fait ni somme ni moyenne su
 
 ### Pourquoi cette règle, et ses limites
 
-Nous avons choisi cette règle parce qu'une commune qui possède le service n'a pas à se déplacer, au moins pour les habitants qui vivent près du centre. Elle a toutefois une limite : dans une grande commune, l'équipement peut être loin du centre, alors que la règle donne 0. C'est pourquoi nous testons, dans la section [Tester la solidité de l'indice](#sec-robustesse), une règle qui ne met jamais 0.
+Nous avons choisi cette règle parce qu'une commune qui possède le service n'a pas à se déplacer, au moins pour les habitants qui vivent près du centre. Elle a toutefois une limite : dans une grande commune, l'équipement peut être loin du centre, alors que la règle donne 0. 
 
-Plus largement, notre distance est à vol d'oiseau : elle ne tient compte ni des routes, ni du relief, ni des horaires. Elle suppose aussi que tous les habitants d'une commune vivent à son centre. Ces limites sont discutées au [chapitre 6](#sec-conclusion).
+La méthode B abandonne cette règle et ne met jamais 0 (section [Les trois méthodes](#sec-methodes)). Plus largement, notre distance est à vol d'oiseau : elle ne tient compte ni des routes, ni du relief, ni des horaires. Elle suppose aussi que tous les habitants d'une commune vivent à son centre. Ces limites sont discutées au [chapitre 6](#sec-conclusion).
 
 ### Un calcul rapide
 
-Comparer chacune des 34 788 communes avec chacun des quelque 550 000 équipements représenterait près de 20 milliards de calculs de distance. Nous utilisons à la place un arbre k-d [@bentley1975], implémenté dans `cKDTree` de SciPy [@virtanen2020]. Cette structure range les points dans l'espace en les découpant successivement en deux, ce qui permet de trouver le plus proche voisin sans tout comparer. Pour chacun des 19 services, on construit un arbre avec les équipements du service, puis on l'interroge avec le centre de chaque commune.
+Comparer chacune des 34 788 communes avec chacun des quelque 530 000 équipements représenterait près de 20 milliards de calculs de distance. Nous utilisons à la place un arbre k-d [@bentley1975], implémenté dans `cKDTree` de SciPy [@virtanen2020]. Cette structure range les points dans l'espace en les découpant successivement en deux, ce qui permet de trouver le plus proche voisin sans tout comparer. Pour chacun des 19 services, on construit un arbre avec les équipements du service, puis on l'interroge avec le centre de chaque commune.
 
 ## L'indice d'isolement {#sec-indice}
 
@@ -166,44 +167,90 @@ $$I = \frac{\sum_{k=1}^{19} w_k \, z_k}{\sum_{k=1}^{19} w_k}$$ {#eq-indice}
 
 où $w_k$ est le poids du service $k$. Plus l'indice est élevé, plus la commune est isolée. Diviser par la somme des poids garde la même échelle quel que soit le jeu de poids.
 
-### Les jeux de poids {#sec-poids}
+Ce calcul est commun à toutes nos méthodes. Elles diffèrent seulement par trois choix : le point de départ de la distance, la règle de présence et les poids.
 
-Le choix des poids est un choix de jugement : tous les services ne se valent pas aux yeux de chacun. Plutôt que d'en retenir un seul, nous en comparons quatre (@tbl-poids).
+## Les trois méthodes {#sec-methodes}
 
-| Jeu | Définition | Question à laquelle il répond |
+Passer de 19 distances à un chiffre par commune oblige à choisir d'où l'on mesure et comment l'on agrège. Ces choix ont plusieurs réponses défendables, c'est pourquoi nous construisons trois indices, présentés dans le @tbl-methodes. Tout le reste est identique (même panier, mêmes équipements, même logarithme, même standardisation), si bien que les différences viennent uniquement de ces choix.
+
+| | Méthode A | Méthode B | Méthode C |
+|---|---|---|---|
+| Point de départ | centroïde du polygone | chef-lieu de la commune | chef-lieu de la commune |
+| Service présent dans la commune | distance mise à 0 | distance réelle, jamais mise à 0 | distance réelle, jamais mise à 0 |
+| Agrégation | 19 services, poids égaux | 19 services, poids selon une grille | 6 besoins, poids égaux |
+
+: Les trois méthodes {#tbl-methodes}
+
+### Méthode A : centroïde et poids égaux
+
+C'est la méthode décrite jusqu'ici. Le point de départ est le centroïde, la distance est mise à 0 quand la commune possède le service, et les 19 services comptent autant. Elle est simple et ne fait aucun jugement de valeur. Son défaut vient du centroïde : il dépend de la forme du territoire et non de l'endroit où vivent les habitants. Dans une très grande commune de montagne ou de marais, il peut tomber à plusieurs kilomètres du bourg, dans une zone où personne n'habite.
+
+### Méthode B : chef-lieu, distance réelle et poids experts
+
+La méthode B change trois choses par rapport à A.
+
+**Le point de départ est le chef-lieu.** Le chef-lieu est le bourg principal, où vit la plus grande partie des habitants et où se trouvent les commerces. Mesurer depuis ce point se rapproche de l'expérience des habitants.
+
+**La distance n'est jamais mise à 0.** Avec le centroïde, un point arbitraire, la règle « présent égale 0 » était nécessaire : mesurer la distance entre un point au hasard et la pharmacie de la commune n'aurait pas eu de sens. Le chef-lieu est au contraire un vrai lieu de vie, et la distance entre le chef-lieu et la pharmacie la plus proche a un sens, même si cette pharmacie est dans la commune. Nous avons ainsi, pour la commune $c$ et le service $s$ :
+
+$$d^{B}_{c,s} = \min_{e \in \mathcal{E}_s} \left\lVert x^{B}_c - x_e \right\rVert$$ {#eq-dB}
+
+où $\mathcal{E}_s$ est l'ensemble des équipements du service $s$ qui ont des coordonnées, $x_e$ la position de l'équipement $e$ et $x^{B}_c$ le chef-lieu de la commune. Une conséquence est que les équipements sans coordonnées (0,4 % du panier) ne comptent plus dans cette méthode, puisque la présence n'est plus utilisée.
+
+**Les services sont pondérés selon une grille.** Nous notons chaque service sur trois critères : l'essentialité $E$ (2 s'il est vital ou obligatoire, 1 s'il est important, 0 s'il est de confort), la fréquence d'usage $F$ (2 si quotidien ou hebdomadaire, 1 si mensuel à quelques fois par an, 0 si rare) et le public concerné $P$ (1 pour presque toute la population, 0 pour un public particulier). Le score d'un service est $1 + E + F + P$, compris entre 1 et 6, et son poids est proportionnel à ce score :
+
+$$w^{B}_s = \frac{1 + E_s + F_s + P_s}{\sum_{k=1}^{19} \left(1 + E_k + F_k + P_k\right)}$$ {#eq-poidsB}
+
+Le « +1 » garantit qu'aucun service n'a un poids nul. Les notes sont un choix de l'équipe, que nous justifions service par service au chapitre 3. L'indice B est la moyenne pondérée des $z$ calculés sur les distances $d^{B}$.
+
+### Méthode C : six grands besoins
+
+Les méthodes A et B résument 19 services, ce qui a un défaut : un thème pèse d'autant plus qu'il compte de services. La santé compte 8 services sur 19 et pèse 42 % de l'indice A, alors que la gare, seule de son thème, pèse 5 %. La méthode C raisonne autrement : un habitant n'a pas 19 besoins, mais quelques grands besoins, que plusieurs services peuvent satisfaire. Nous regroupons donc les 19 services en six besoins, en suivant la nomenclature de la BPE (@tbl-besoins).
+
+| Besoin | Services | Règle |
 |---|---|---|
-| `egaux` | tous les services pèsent 1 | c'est l'indice de référence |
-| `vitaux` | urgences, maternité, médecin, pharmacie et santé de proximité comptent double | et si les soins de premier recours et urgents pesaient plus ? |
-| `themes` | chaque thème pèse autant | et si la santé, avec ses 8 services, ne dominait pas ? |
-| `acp` | première composante principale des 19 $z$ | que dit la structure des données elle-même ? |
+| Faire ses courses | boulangerie, alimentation | minimum |
+| Se soigner au quotidien | médecin, pharmacie, infirmier, kinésithérapeute, dentiste, santé de proximité | moyenne |
+| Soins hospitaliers | urgences, maternité | moyenne |
+| Scolariser ses enfants | école, collège, lycée | moyenne |
+| Démarches et accompagnement social | poste, France Services, petite enfance, personnes âgées, proximité sociale | moyenne |
+| Se déplacer | gare | (un seul service) |
 
-: Les quatre jeux de poids {#tbl-poids}
+: Les six besoins de la méthode C {#tbl-besoins}
 
-Pour `themes`, le poids d'un service est l'inverse du nombre de services de son thème. Les deux services de commerces pèsent 1/2 chacun, les trois services d'enseignement 1/3, les cinq services publics 1/5, chacun des huit services de santé 1/8 (soit 0,125), et la gare, seule dans son thème, pèse 1.
+Deux choix demandent une explication. D'abord, les urgences et la maternité sont séparées des soins courants, bien qu'elles relèvent toutes de la santé : on n'y va pas pour les mêmes raisons ni au même rythme, et elles sont vingt à cinquante fois plus rares. Les mélanger noierait l'accès au médecin dans l'éloignement de l'hôpital. Ensuite, la règle diffère selon le besoin. Pour faire ses courses, la boulangerie et la supérette sont substituables, car on peut acheter du pain au supermarché : la distance au besoin est la distance au plus proche des deux. Pour les autres besoins, les services sont complémentaires, car un pharmacien ne remplace pas un médecin : on prend la moyenne des distances.
 
-Pour `acp`, nous utilisons l'analyse en composantes principales (ACP). Elle cherche la combinaison des 19 $z$ qui varie le plus d'une commune à l'autre. Les poids sont donc fournis par les données elles-mêmes. Le signe de cette combinaison est arbitraire, donc nous l'orientons pour qu'un score élevé veuille dire « plus isolé » (en le comparant à l'indice à poids égaux). Comme les scores de l'ACP ne sont pas sur la même échelle que les autres indices, nous ne les comparons qu'à travers les classements.
+Pour la commune $c$ et le besoin $g$, à partir des distances $d^{B}$ :
+
+$$D_{c,g} = \begin{cases} \min_{s \in g} d^{B}_{c,s} & \text{si les services de } g \text{ sont substituables (courses)} \\[1ex] \dfrac{1}{|g|} \sum_{s \in g} d^{B}_{c,s} & \text{sinon} \end{cases}$$ {#eq-besoin}
+
+Nous appliquons ensuite le logarithme et la standardisation besoin par besoin, puis nous faisons la moyenne des six besoins, chacun pesant autant :
+
+$$I^{C}_c = \frac{1}{6} \sum_{g=1}^{6} z_{c,g}$$ {#eq-indiceC}
+
+La méthode C ne change donc qu'une chose par rapport à B : l'agrégation. Elle donne plus de place aux équipements rares, la gare et l'hôpital, qui pèsent chacun un sixième de l'indice.
 
 ## Tester la solidité de l'indice {#sec-robustesse}
 
-Notre indice repose sur des choix que nous aurions pu faire autrement : la règle de distance, la qualité des coordonnées et les poids. Nous voulons vérifier que les résultats ne changent pas beaucoup si nous faisons d'autres choix. C'est l'objet de l'hypothèse H4.
+Nos indices reposent sur des choix que nous aurions pu faire autrement. Nous voulons vérifier que les résultats ne changent pas beaucoup si nous en faisons d'autres. C'est l'objet de l'hypothèse H4. Au-delà de A et de B, nous croisons trois ingrédients (@tbl-grille30) :
 
-### Trois règles de distance
+| Ingrédient | Variantes |
+|---|---|
+| Point de départ | centroïde, chef-lieu |
+| Règle de distance | `presence` (distance 0 si le service est dans la commune), `sans_presence` (jamais 0), `positions_AB` (seules les positions de qualité `A` et `B` servent aux distances, la présence n'étant pas modifiée) |
+| Poids | `egaux`, `experts`, `vitaux`, `themes`, `acp` |
 
-| Règle | Ce qu'elle fait | Ce que nous testons |
-|---|---|---|
-| `presence` (référence) | distance 0 si la commune possède le service, sinon distance du centre de la commune à l'équipement le plus proche | notre règle principale |
-| `sans_regle_presence` | on ne met jamais 0 : on prend toujours la distance entre le centre de la commune et l'équipement le plus proche, même s'il est dans la commune | la règle « présent = 0 » |
-| `positions_AB` | seules les positions de qualité `A` et `B` servent aux distances (la présence n'est pas modifiée) | la fiabilité des coordonnées |
+: Les ingrédients des 30 indices {#tbl-grille30}
 
-: Les trois règles de distance {#tbl-regles}
+Les jeux de poids `vitaux`, `themes` et `acp` sont ceux de notre première version du projet. Pour `vitaux`, les urgences, la maternité, le médecin, la pharmacie et la santé de proximité comptent double. Pour `themes`, chaque thème pèse autant : le poids d'un service est l'inverse du nombre de services de son thème, ce qui donne à la gare, seule dans le sien, le poids de tout un thème. Pour `acp`, les poids sont fournis par l'analyse en composantes principales (ACP), qui cherche la combinaison des $z$ qui varie le plus d'une commune à l'autre. Le signe de cette combinaison est arbitraire : nous l'orientons pour qu'un score élevé veuille dire « plus isolé ». Comme les scores de l'ACP ne sont pas sur la même échelle que les autres, nous ne les comparons qu'à travers les classements.
 
-Combinées aux quatre jeux de poids, elles donnent $3 \times 4 = 12$ indices. L'indice de référence est celui de la règle `presence` avec les poids `egaux`.
-
-La variante `positions_AB` est importante pour juger de la fiabilité des données : toutes les positions de la BPE n'ont pas la même précision, et nous voulons savoir si les positions moins précises faussent le classement. Pour elle, seule la distance utilise le filtre sur la qualité : la présence d'un service dans une commune reste fondée sur tous les équipements, avec ou sans coordonnées.
+Le croisement donne $2 \times 3 \times 5 = 30$ indices. A est le croisement (centroïde, `presence`, `egaux`) et B le croisement (chef-lieu, `sans_presence`, `experts`).
 
 ### Comparer des classements
 
-Nous comparons les indices par la corrélation de Spearman, qui compare les classements des communes. Pour chaque indice, on classe les communes de la plus isolée à la moins isolée, puis on mesure la corrélation entre les deux classements. Elle vaut 1 si les deux indices classent les communes dans le même ordre, et −1 s'ils les classent en sens inverse. On considère en général qu'une valeur supérieure à 0,9 indique des classements très proches. Il ne s'agit pas d'un test statistique : nous comparons des variantes d'un même calcul, pas des échantillons. Les résultats sont présentés dans la section [Robustesse de l'indice](#sec-robustesse-resultats) du chapitre 3.
+Nous comparons les indices par la corrélation de Spearman, qui compare les classements des communes. Elle vaut 1 si deux indices classent les communes dans le même ordre. On considère en général qu'une valeur supérieure à 0,9 indique des classements très proches. Il ne s'agit pas d'un test statistique : nous comparons des variantes d'un même calcul, pas des échantillons. Nous mesurons aussi l'écart entre deux classements par $1 - \rho$ (0 si les classements sont identiques), ce qui permet de voir lequel de nos choix déplace le plus le classement.
+
+Une corrélation globale peut cacher des désaccords sur les communes qui comptent le plus. Pour cibler une aide, on s'intéresse à la liste des communes les plus isolées. Nous mesurons donc aussi le recouvrement de deux listes : la part des communes du top 10 % (ou 1 %) d'un indice qui figurent aussi dans celui d'un autre. Les résultats sont présentés au [chapitre 5](#sec-comparaison).
 
 ## Outils statistiques {#sec-outils}
 
@@ -225,6 +272,6 @@ Pour comparer une variable entre plusieurs groupes (par exemple l'indice dans ci
 
 Nous découpons souvent une variable (densité, revenu) en cinq classes de même effectif, les quintiles : les 20 % de communes les moins denses, les 20 % suivantes, et ainsi de suite. Cela permet de comparer des groupes de même taille sans être gênés par les valeurs extrêmes.
 
-### La typologie : k-means et ACP
+### Les centiles
 
-Pour regrouper les communes selon leur profil d'éloignement, nous utilisons la méthode des k-means [@macqueen1967]. Chaque commune est décrite par ses 19 valeurs de $z$. On fixe le nombre de groupes $k$, puis l'algorithme répète deux étapes : rattacher chaque commune au centre de groupe le plus proche, puis recalculer chaque centre comme la moyenne des communes de son groupe, jusqu'à ce que plus rien ne bouge. Pour choisir $k$, nous regardons l'inertie (la somme des carrés des écarts aux centres, qui baisse toujours quand $k$ augmente, et dont on cherche le « coude ») et la silhouette [@rousseeuw1987], qui va de −1 à 1 et mesure si les groupes sont bien séparés. L'ACP sert seulement à dessiner les groupes dans un plan à deux dimensions. Le détail est au [chapitre 5](#sec-typologie).
+Pour comparer des cartes d'indices qui n'ont pas la même échelle, nous colorons chaque commune selon son centile : un centile de 90 veut dire que la commune est plus isolée que 90 % des communes, selon la méthode considérée.

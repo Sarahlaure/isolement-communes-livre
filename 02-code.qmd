@@ -1,6 +1,6 @@
 # Le code {#sec-code}
 
-Le projet est organisé en modules Python, rangés dans le dossier `src/`. Chaque module fait une seule chose et peut être testé séparément. Le notebook `rapport.ipynb` les appelle dans l'ordre et raconte l'analyse. Ce chapitre explique ce que fait chaque module, ses fonctions principales et les choix que nous y avons faits. Les extraits de code sont repliés : il suffit de cliquer sur « Voir le code » pour les afficher.
+Le projet est organisé en modules Python, rangés dans le dossier `src/`. Chaque module fait une seule chose et peut être testé séparément. Le notebook du rapport les appelle dans l'ordre et raconte l'analyse. Ce chapitre explique ce que fait chaque module, ses fonctions principales et les choix que nous y avons faits. Les extraits de code sont repliés : il suffit de cliquer sur « Voir le code » pour les afficher.
 
 ## Vue d'ensemble {#sec-code-vue}
 
@@ -10,30 +10,27 @@ Les modules s'enchaînent comme le montre la @fig-flux. Chaque flèche correspon
 %%| label: fig-flux
 %%| fig-cap: "Enchaînement des modules et des fichiers"
 flowchart TD
-    A["download.py<br/>télécharge la BPE"] --> B[("data/raw/<br/>BPE25.parquet, contours,<br/>population, revenu")]
+    A["download.py<br/>télécharge BPE, IGN,<br/>population, revenu"] --> B[("data/raw/")]
     B --> C["prepare_bpe.py<br/>filtre sur le panier"]
     C --> D[("data/interim/<br/>equipements.parquet")]
-    B --> E["communes.py<br/>centre, surface, population"]
+    B --> E["communes.py<br/>centroïde, chef-lieu,<br/>surface, population"]
     D --> F["distances.py<br/>présence et distances"]
     E --> F
-    F --> G["indice.py<br/>log, z-score, poids, ACP"]
-    G --> H["descriptif.py<br/>analyse.py<br/>statistiques, tests, typologie"]
-    F --> I[("data/processed/<br/>communes_distances.parquet")]
-    G --> J[("data/processed/<br/>indices.parquet")]
-    H --> K[("data/processed/<br/>communes_analyse.parquet")]
+    F --> G["indice.py<br/>log, z-score, poids,<br/>besoins, ACP"]
+    G --> H["descriptif.py<br/>analyse.py<br/>statistiques, revenu, tests"]
+    F --> I[("data/processed/<br/>distances_A.parquet<br/>distances_B.parquet")]
+    H --> K[("data/processed/<br/>communes_analyse_v5.parquet")]
 ```
 
 | Fichier | Rôle |
 |---|---|
-| `download.py` | télécharge les fichiers de la BPE |
-| `inspect_bpe.py` | inspecte la BPE avant de la nettoyer |
+| `download.py` | télécharge la BPE, les contours IGN, la population et le revenu |
 | `prepare_bpe.py` | filtre la BPE sur le panier de services |
-| `communes.py` | construit la table des communes |
+| `communes.py` | construit la table des communes, avec centroïde et chef-lieu |
 | `distances.py` | calcule la présence des services et les distances |
-| `indice.py` | construit l'indice d'isolement |
+| `indice.py` | construit les indices (poids, grille experte, besoins) |
 | `descriptif.py` | statistiques descriptives |
-| `analyse.py` | revenu, corrélations, tests et typologie |
-| `tests/` | tests automatiques |
+| `analyse.py` | revenu, corrélations et tests |
 
 : Les modules du projet {#tbl-modules}
 
@@ -41,25 +38,26 @@ Un principe commun : les fonctions qui font les calculs travaillent sur de simpl
 
 ## `download` : télécharger les données {#sec-code-download}
 
-**Rôle.** Ce script est la mémoire écrite de la provenance de nos données. Au lieu de télécharger les fichiers à la main, avec des clics qu'on ne peut pas rejouer, nous les téléchargeons par du code, ce qui rend le projet reproductible.
+**Rôle.** Ce script est la mémoire écrite de la provenance de nos données. Au lieu de télécharger les fichiers à la main, avec des clics qu'on ne peut pas rejouer, nous les téléchargeons par du code, ce qui rend le projet reproductible. Une seule fonction, `tout_telecharger()`, récupère tout ce dont le projet a besoin dans le dossier `data/raw/`.
 
 **Où vont les fichiers.** Le chemin du dossier `data/raw/` est construit à partir de l'emplacement du script lui-même (`Path(__file__).resolve().parents[1]`), c'est-à-dire la racine du projet. Le chemin est donc juste quel que soit l'ordinateur ou le dossier d'où on lance le script.
 
 **Ce qu'il contient.**
 
-- Un dictionnaire `FICHIERS_AUTO` décrit les cinq fichiers téléchargés automatiquement : pour chacun, l'adresse, ce que c'est et à quoi il sert.
-- Un dictionnaire `FICHIERS_MANUELS` décrit les trois fichiers à placer à la main (population, contours, revenus), avec où les trouver.
-- `telecharger(url, destination)` télécharge un fichier.
-- `verifier(destination)` contrôle qu'il est valide.
-- `main()` enchaîne le tout et renvoie 0 si tout s'est bien passé.
+- Le dictionnaire `FICHIERS_AUTO` décrit les cinq fichiers de l'INSEE sur la BPE : pour chacun, l'adresse, ce que c'est et à quoi il sert.
+- Le dictionnaire `FICHIERS_EXTERNES` décrit les trois autres sources : les contours IGN (une archive `.7z`), la population de l'INSEE (un classeur Excel) et Filosofi (une archive `.zip` obtenue par l'API Melodi de l'INSEE). Si une adresse change, il suffit de la modifier dans ce dictionnaire.
+- `telecharger(url, destination)` télécharge un fichier et `verifier(destination)` contrôle qu'il est valide.
+- `telecharger_tout()` télécharge et vérifie les cinq fichiers de la BPE.
+- `_extraire(archive, membre, destination)` extrait d'une archive `.zip` ou `.7z` le fichier dont le nom se termine par le nom cherché. Pour le format `.7z`, elle utilise la bibliothèque `py7zr`, et signale clairement qu'il faut l'installer si elle manque.
+- `telecharger_externes()` télécharge les trois sources externes, les décompresse et supprime les archives, sauf si on demande de les garder. Elle renvoie la liste des fichiers en échec.
+- `tout_telecharger()` enchaîne les deux et renvoie 0 si tout est présent, 1 sinon.
 
-**Les choix.** Trois précautions rendent le téléchargement fiable.
+**Les choix.** Quatre précautions rendent le téléchargement fiable.
 
-1. Si le fichier existe déjà, il n'est pas retéléchargé : on peut relancer le script sans risque.
+1. Si le fichier existe déjà, il n'est pas retéléchargé : on peut relancer le script sans risque, et un échec sur un fichier n'empêche pas de télécharger les autres.
 2. Le fichier est d'abord écrit sous un nom temporaire (`.part`) et renommé seulement à la fin. Si la connexion coupe en route, on ne garde pas un fichier tronqué qu'on prendrait ensuite pour un fichier complet.
-3. Le fichier est lu par blocs de 1 Mo (`stream=True`), sans tout charger en mémoire, ce qui est utile pour un fichier de 163 Mo.
-
-Enfin, `verifier` contrôle que le fichier est bien ce qu'il prétend être : un site peut répondre « succès » mais renvoyer une page web à la place du fichier. Un fichier parquet commence toujours par les quatre octets `PAR1`, et un CSV ne doit pas commencer par `<` (début d'une page HTML).
+3. Le fichier est lu par blocs de 1 Mo (`stream=True`), sans tout charger en mémoire, ce qui est utile pour un fichier de 163 Mo, et plus encore pour le GeoPackage de 1,1 Go qui sort de l'archive IGN.
+4. `verifier` contrôle que le fichier est bien ce qu'il prétend être : un site peut répondre « succès » mais renvoyer une page web à la place du fichier. Un fichier parquet commence toujours par les quatre octets `PAR1`, et un CSV ne doit pas commencer par `<` (début d'une page HTML).
 
 <details class="code-details">
 <summary>Voir le code de la fonction `telecharger`</summary>
@@ -73,26 +71,25 @@ def telecharger(url: str, destination: Path, taille_bloc: int = 1 << 20) -> None
     temporaire = destination.with_suffix(destination.suffix + ".part")
     with requests.get(url, stream=True, timeout=120,
                       headers={"User-Agent": "projet-ensae-python"}) as reponse:
-        reponse.raise_for_status()   # lève une erreur si le serveur répond 403, 404, 500...
+        reponse.raise_for_status()
         with open(temporaire, "wb") as fichier:
             for bloc in reponse.iter_content(chunk_size=taille_bloc):
                 fichier.write(bloc)
 
-    temporaire.rename(destination)   # le fichier est complet : on lui donne son vrai nom
+    temporaire.rename(destination)
 ```
 
 </details>
 
-## `inspect_bpe` et `prepare_bpe` : préparer la BPE {#sec-code-bpe}
+## `prepare_bpe` : préparer la BPE {#sec-code-bpe}
 
-**`inspect_bpe.py`.** Avant d'écrire le moindre calcul, ce script inspecte la BPE avec DuckDB : il affiche les colonnes réelles du fichier, le nombre de lignes, le nombre d'équipements de chaque type du panier, et signale les codes du panier absents du fichier. Il nous a permis de vérifier que nos 33 codes `TYPEQU` existent bien dans la BPE 2025 avant de construire le reste.
-
-**`prepare_bpe.py`.** Ce script extrait de la BPE uniquement ce dont le projet a besoin et écrit `data/interim/equipements.parquet`.
+Ce script extrait de la BPE uniquement ce dont le projet a besoin et écrit `data/interim/equipements.parquet`.
 
 - Le dictionnaire `SERVICES` est le cœur du module : il associe à chaque service les codes `TYPEQU` qui comptent pour lui. C'est le seul endroit où le panier est défini. Pour l'ajuster, on ne modifie que ce dictionnaire.
 - `table_de_correspondance()` transforme ce dictionnaire en tableau (`TYPEQU`, `service`), une ligne par code. Elle vérifie au passage qu'un code n'appartient pas à deux services à la fois.
 - `preparer()` lit la BPE avec DuckDB et écrit le fichier propre.
 - `resume()` produit un tableau de contrôle par service : nombre d'équipements, nombre avec coordonnées, nombre de communes concernées.
+- `main()` enchaîne la préparation et affiche ce tableau.
 
 **Les choix.** DuckDB lit directement le fichier parquet avec une requête SQL, sans charger les 95 colonnes en mémoire. Le filtre se fait par une jointure interne (`INNER JOIN`) avec le tableau de correspondance : on ne garde que les types du panier. Les coordonnées sont converties en nombres avec `TRY_CAST`, qui donne une valeur vide au lieu de planter si la case est vide. Enfin, les équipements sans coordonnées sont conservés : ils servent à la présence.
 
@@ -102,12 +99,12 @@ def telecharger(url: str, destination: Path, taille_bloc: int = 1 << 20) -> None
 ```python
 requete = f"""
     SELECT
-        b.DEPCOM                        AS depcom,
-        c.service                       AS service,
-        b.TYPEQU                        AS typequ,
+        b.DEPCOM                      AS depcom,
+        c.service                     AS service,
+        b.TYPEQU                      AS typequ,
         TRY_CAST(b.LAMBERT_X AS DOUBLE) AS x,
         TRY_CAST(b.LAMBERT_Y AS DOUBLE) AS y,
-        b.QUALITE_XY                    AS qualite_xy
+        b.QUALITE_XY                  AS qualite_xy
     FROM read_parquet('{bpe.as_posix()}') AS b
     INNER JOIN correspondance AS c ON b.TYPEQU = c.TYPEQU
     WHERE CAST(b.EPSG AS VARCHAR) = '2154'
@@ -119,7 +116,7 @@ equipements = con.sql(requete).df()
 
 ## `communes` : la table des communes {#sec-code-communes}
 
-**Rôle.** Ce module construit la table de base, une ligne par commune ou arrondissement, avec son centre, sa surface et sa population. Il distingue deux niveaux de fonctions : celles qui lisent les cartes (avec `geopandas`) et celles qui travaillent sur de simples tableaux `pandas`, faciles à tester.
+**Rôle.** Ce module construit la table de base, une ligne par commune ou arrondissement, avec son centroïde, son chef-lieu, sa surface et sa population. Il distingue deux niveaux de fonctions : celles qui lisent les cartes (avec `geopandas`) et celles qui travaillent sur de simples tableaux `pandas`, faciles à tester.
 
 | Fonction | Ce qu'elle fait |
 |---|---|
@@ -129,6 +126,8 @@ equipements = con.sql(requete).df()
 | `geometrie_vers_table` | transforme une couche en tableau (code, nom, centre, surface) |
 | `assembler_base` | réunit communes et arrondissements |
 | `fusionner_population` | joint la population municipale |
+| `lire_chefs_lieux` | lit la position des chefs-lieux dans les couches ponctuelles de l'IGN |
+| `centres_chef_lieu` | remplace le centroïde par le chef-lieu comme point de départ |
 | `geometries_base` | polygones de la base, pour les cartes |
 
 : Les fonctions de `communes.py` {#tbl-communes}
@@ -139,6 +138,27 @@ equipements = con.sql(requete).df()
 - `geometrie_vers_table` calcule le centre de chaque commune avec `geometry.centroid` et sa surface avec `geometry.area / 1e6` (les unités sont des mètres, on divise par un million pour passer en km²).
 - `assembler_base` retire les trois villes mères (Paris, Lyon, Marseille), dont les codes sont repérés automatiquement comme les valeurs de la colonne `parent` des arrondissements, ajoute les arrondissements, retire les codes qui commencent par `97` ou `98`, puis fait deux contrôles : tous les codes ont cinq caractères, et aucun n'est en double.
 - `fusionner_population` fait une jointure à gauche (`how="left"`) : aucune commune ne disparaît. Elle remet les codes sur cinq caractères avec `zfill(5)`, et elle renvoie un journal qui compte les communes sans population et les codes du fichier absents de la base.
+
+- `lire_chefs_lieux` lit deux couches ponctuelles du GeoPackage, `chef_lieu_de_commune` et `chef_lieu_d_arrondissement_municipal`, et renvoie un tableau avec le code, les coordonnées (`x_cl`, `y_cl`) et le nom du chef-lieu. Les codes sont remis en texte et nettoyés avec `str.strip()`, et les doublons de code sont supprimés.
+- `centres_chef_lieu` joint ce tableau à la base (jointure à gauche) et remplace les coordonnées du centre par celles du chef-lieu. Si une commune n'a pas de chef-lieu dans la couche de l'IGN, elle garde son centroïde, et la fonction la compte dans un journal (six communes de la Meuse). Elle ajoute aussi la colonne `ecart_centre_km`, la distance entre le centroïde et le chef-lieu, calculée avec `np.hypot` sur les coordonnées en mètres puis divisée par 1 000.
+
+<details class="code-details">
+<summary>Voir le code de `centres_chef_lieu`</summary>
+
+```python
+def centres_chef_lieu(base: pd.DataFrame, chefs: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
+    res = base.merge(chefs[["code", "x_cl", "y_cl"]], on="code", how="left")
+    sans = res["x_cl"].isna()
+    ecart = np.hypot(res["x_cl"] - res["x"], res["y_cl"] - res["y"]) / 1000.0
+    res["ecart_centre_km"] = ecart.fillna(0.0)
+    res["x"] = res["x_cl"].fillna(res["x"])
+    res["y"] = res["y_cl"].fillna(res["y"])
+    journal = {"communes": int(len(res)), "sans_chef_lieu (centroïde gardé)": int(sans.sum()),
+               "codes_sans_chef_lieu": sorted(res.loc[sans, "code"].tolist())[:10]}
+    return res.drop(columns=["x_cl", "y_cl"]), journal
+```
+
+</details>
 
 <details class="code-details">
 <summary>Voir le code de `assembler_base`</summary>
@@ -166,7 +186,7 @@ def assembler_base(communes: pd.DataFrame, arrondissements: pd.DataFrame) -> pd.
 
 ## `distances` : présence et distances {#sec-code-distances}
 
-**Rôle.** Ce module applique la règle du chapitre 1 : il dit, pour chaque commune et chaque service, si le service est présent, et à quelle distance se trouve le plus proche.
+**Rôle.** Ce module applique les règles du chapitre 1 : il dit, pour chaque commune et chaque service, si le service est présent, et à quelle distance se trouve le plus proche. Le même code sert aux méthodes A et B : seuls changent le centre fourni (`x` et `y` de la table des communes) et l'option `regle_presence`.
 
 | Fonction | Ce qu'elle fait |
 |---|---|
@@ -183,14 +203,20 @@ def assembler_base(communes: pd.DataFrame, arrondissements: pd.DataFrame) -> pd.
 
 **`distances_par_service`.** Pour chaque service, elle calcule la distance de toutes les communes à l'équipement le plus proche, convertit en kilomètres, puis met 0 là où le service est présent. Deux options permettent de réaliser les variantes de robustesse :
 
-- `regle_presence=False` ne met jamais 0 : la distance est toujours celle du centre de la commune à l'équipement le plus proche ;
+- `regle_presence=False` ne met jamais 0 : la distance est toujours celle du centre de la commune à l'équipement le plus proche. C'est le réglage de la méthode B ;
 - `qualites=["A", "B"]` ne garde, pour le calcul de distance, que les équipements dont la position est de bonne qualité. La présence n'est pas filtrée.
 
 <details class="code-details">
 <summary>Voir le code de `distances_par_service`</summary>
 
 ```python
-def distances_par_service(communes, equipements, services, qualites=None, regle_presence=True):
+def distances_par_service(
+    communes: pd.DataFrame,
+    equipements: pd.DataFrame,
+    services: list[str],
+    qualites: list[str] | None = None,
+    regle_presence: bool = True,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
     origines = communes[["x", "y"]].to_numpy(dtype=float)
     presence = presence_par_service(communes["code"].to_numpy(), equipements, services)
     colonnes = {}
@@ -208,19 +234,19 @@ def distances_par_service(communes, equipements, services, qualites=None, regle_
 
 </details>
 
-## `indice` : de 19 distances à un indice {#sec-code-indice}
+## `indice` : des distances aux indices {#sec-code-indice}
 
-**Rôle.** Ce module met en code les trois étapes de la section [L'indice d'isolement](01-donnees-methodologie.qmd#sec-indice).
+**Rôle.** Ce module met en code les étapes de la section [L'indice d'isolement](01-donnees-methodologie.qmd#sec-indice), la grille de pondération de la méthode B et le regroupement en besoins de la méthode C.
 
-| Fonction | Ce qu'elle fait |
+| Fonction ou constante | Ce qu'elle fait |
 |---|---|
 | `log_distance` | $\ln(1 + d)$, avec `np.log1p` |
 | `standardiser` | z-score de chaque colonne |
-| `poids_egaux`, `poids_vitaux`, `poids_themes_equilibres` | les trois jeux de poids simples |
+| `poids_egaux`, `poids_vitaux`, `poids_themes_equilibres` | les jeux de poids simples |
+| `GRILLE_EXPERTE`, `table_grille_experte`, `poids_experts` | grille de la méthode B, tableau qui la présente, poids qui en découlent |
+| `BESOINS`, `distances_par_besoin` | les six besoins de la méthode C et leurs distances |
 | `indice_pondere` | moyenne pondérée des $z$ |
 | `indice_acp` | première composante principale, orientée |
-| `calculer_indice` | enchaîne les étapes pour un jeu de poids |
-| `comparer_classements` | corrélation de Spearman entre indices |
 
 : Les fonctions de `indice.py` {#tbl-indice}
 
@@ -228,9 +254,26 @@ def distances_par_service(communes, equipements, services, qualites=None, regle_
 
 - `np.log1p(d)` calcule directement $\ln(1+d)$ et reste précis pour de petites valeurs de $d$.
 - `standardiser` utilise un écart-type avec `ddof=0` (division par $n$, pas par $n-1$) : nous standardisons toute la population des communes, pas un échantillon. Si un service avait un écart-type nul (même valeur partout), la colonne devient une colonne de zéros au lieu de provoquer une division par zéro.
+- `GRILLE_EXPERTE` associe à chaque service un triplet de notes (essentialité, fréquence, public) et sa justification. `poids_experts` en tire le score $1 + E + F + P$ de chaque service ; `table_grille_experte` en fait un tableau avec le score, le poids normalisé (somme égale à 1) et la justification, c'est celui du chapitre 3.
+- `BESOINS` est un dictionnaire qui décrit chaque besoin : son libellé, la liste de ses services et la règle d'agrégation (`"min"` ou `"moyenne"`). Il est défini en un seul endroit, comme le panier, et il suffit de le modifier pour tester un autre regroupement.
+- `distances_par_besoin` applique cette règle à la table des distances : pour chaque besoin, le minimum des colonnes de ses services ou leur moyenne, selon la règle. Elle renvoie une table commune × besoin, que l'on passe ensuite à `log_distance` et `standardiser` comme les distances par service.
 - Les services « vitaux » et les thèmes sont des dictionnaires définis en haut du module (`SERVICES_VITAUX`, `THEMES`), ce qui les rend faciles à modifier. Pour `poids_themes_equilibres`, le poids d'un service est $1/n$, où $n$ est le nombre de services de son thème, calculé avec `value_counts`.
-- `indice_pondere` vérifie qu'aucun poids ne manque, calcule le numérateur $\sum w z$ par ligne et divise par $\sum w$.
+- `indice_pondere` vérifie qu'aucun poids ne manque, calcule le numérateur $\sum w z$ par ligne et divise par $\sum w$. La méthode C l'utilise avec un poids de 1 pour chaque besoin.
 - `indice_acp` utilise `PCA(n_components=1)` de `scikit-learn` [@pedregosa2011]. Le signe d'une composante principale est arbitraire : la fonction compare le score à un indice de référence et change le signe si la corrélation est négative, pour qu'un score élevé veuille toujours dire « plus isolé ». Elle renvoie aussi la part de variance expliquée.
+
+<details class="code-details">
+<summary>Voir le code de `distances_par_besoin`</summary>
+
+```python
+def distances_par_besoin(distances_km: pd.DataFrame, besoins: dict[str, dict] = BESOINS) -> pd.DataFrame:
+    colonnes = {}
+    for nom, b in besoins.items():
+        d = distances_km[b["services"]]
+        colonnes[nom] = d.min(axis=1) if b["regle"] == "min" else d.mean(axis=1)
+    return pd.DataFrame(colonnes, index=distances_km.index)
+```
+
+</details>
 
 <details class="code-details">
 <summary>Voir le code de `standardiser`, `indice_pondere` et `indice_acp`</summary>
@@ -275,9 +318,9 @@ $$\text{part}_k(t) = \frac{\sum_c \text{pop}_c \cdot \mathbf{1}\{d_{c,k} > t\}}{
 
 Une commune équipée a une distance de 0, donc elle n'est jamais comptée comme éloignée, quel que soit le seuil. Les communes sans population renseignée sont écartées du calcul.
 
-## `analyse` : revenu, tests et typologie {#sec-code-analyse}
+## `analyse` : revenu et tests {#sec-code-analyse}
 
-**Rôle.** Ce module regroupe les analyses de la seconde partie du projet.
+**Rôle.** Ce module regroupe les analyses statistiques du chapitre 4.
 
 | Fonction | Ce qu'elle fait |
 |---|---|
@@ -285,19 +328,16 @@ Une commune équipée a une distance de 0, donc elle n'est jamais comptée comme
 | `fusionner_revenu` | joint le revenu à la base (jointure à gauche) |
 | `correlation_spearman` | corrélation de Spearman et p-value, sur les paires complètes |
 | `comparer_groupes` | test de Kruskal-Wallis et taille d'effet ε² |
-| `choisir_k` | inertie et silhouette pour plusieurs valeurs de $k$ |
-| `typologie` | k-means sur les $z$, numérotation des groupes, plan de l'ACP |
 
 : Les fonctions de `analyse.py` {#tbl-analyse}
 
-**`lire_revenu`.** Le fichier Filosofi est en format long : une ligne par couple (territoire, indicateur). La fonction teste plusieurs encodages et séparateurs pour être tolérante avec le format du fichier, puis ne garde que les lignes dont le type de territoire est une commune (`COM`) ou un arrondissement (`ARM`) et dont l'indicateur est `MED_SL`. Les valeurs absentes (secret statistique `s`, donnée manquante `vm`) deviennent des cases vides avec `pd.to_numeric(..., errors="coerce")`.
+**`lire_revenu`.** Le fichier Filosofi est en format long : une ligne par couple (territoire, indicateur). La fonction teste plusieurs encodages et séparateurs pour être tolérante avec le format du fichier, puis ne garde que les lignes dont le type de territoire est une commune (`COM`) ou un arrondissement (`ARM`) et dont l'indicateur est `MED_SL`. Les valeurs absentes (secret statistique `s`, donnée manquante `vm`) deviennent des cases vides avec `pd.to_numeric(..., errors="coerce")`. Les codes sont remis sur cinq caractères avec `zfill(5)`.
+
+**`fusionner_revenu`.** Elle fait une jointure à gauche, si bien qu'aucune commune ne disparaît, et renvoie un journal qui compte les communes sans revenu et les codes du fichier absents de la base.
 
 **`correlation_spearman`.** Elle ne garde que les paires où les deux valeurs sont renseignées, puis appelle `scipy.stats.spearmanr` [@virtanen2020]. Elle renvoie ρ, la p-value et le nombre de paires.
 
 **`comparer_groupes`.** Elle appelle `scipy.stats.kruskal` sur les valeurs de chaque groupe et calcule la taille d'effet $\varepsilon^2 = H/(n-1)$. Elle renvoie aussi un tableau par groupe (effectif, médiane, premier et troisième quartiles).
-
-**`choisir_k` et `typologie`.** Elles utilisent `KMeans` de `scikit-learn`. `choisir_k` calcule la silhouette sur un échantillon de 5 000 communes, car elle est coûteuse sur 34 788 points. `typologie` lance le k-means (avec `n_init=10`, c'est-à-dire dix initialisations aléatoires dont la meilleure est gardée) et renumérote les groupes du mieux desservi (0) au moins bien desservi, d'après la moyenne de leurs $z$. Sans cette étape, la numérotation brute du k-means serait aléatoire. La fonction calcule aussi le plan des deux premières composantes principales pour dessiner les groupes, et les profils moyens de chaque groupe.
-
 
 <details class="code-details">
 <summary>Voir le code de `correlation_spearman` et `comparer_groupes`</summary>
@@ -322,25 +362,19 @@ def comparer_groupes(valeur: pd.Series, groupe: pd.Series) -> tuple[dict, pd.Dat
 
 </details>
 
-## Les tests {#sec-code-tests}
+## Les contrôles dans le code {#sec-code-controles}
 
-Le dossier `tests/` contient des tests automatiques, lancés avec `pytest`. Ils vérifient que les fonctions font bien ce qu'on attend sur de très petits jeux de données fictifs, où l'on peut calculer le résultat à la main.
+Le code vérifie ses propres résultats à plusieurs endroits, avec des instructions `assert` et des erreurs explicites. Ces contrôles arrêtent le calcul dès qu'un résultat est incohérent, au lieu de laisser passer une erreur silencieuse.
 
-| Test | Ce qu'il vérifie |
+| Où | Ce qui est vérifié |
 |---|---|
-| `test_distance_simple`, `test_distance_ignores_nan_and_empty` | la distance au plus proche (un triangle 3-4-5 donne 5) ; les coordonnées vides sont ignorées ; sans aucune cible, le résultat est vide |
-| `test_presence` | une commune est équipée si elle a au moins un équipement du service |
-| `test_distances_regle_principale` | distance 0 si présent (même sans coordonnées), sinon distance euclidienne en km |
-| `test_distances_filtre_qualite_et_variante` | le filtre `A`/`B` ne modifie pas la présence ; sans règle de présence, une commune équipée à 0,5 km de son équipement n'est pas à 0 |
-| `test_controle_codes` | les équipements dont la commune est inconnue sont bien comptés |
-| `test_standardiser` | moyenne 0 et écart-type 1 ; une colonne constante devient une colonne de zéros |
-| `test_poids` | valeurs des trois jeux de poids (pharmacie ×2 pour `vitaux`, 0,5 pour la pharmacie avec `themes` quand la santé compte deux services) |
-| `test_indice_et_acp` | l'indice à poids égaux a une moyenne nulle ; la commune la plus loin de tout a l'indice le plus haut ; l'ACP est orientée comme la référence |
-| `test_assembler_base` | les villes mères sont remplacées par leurs arrondissements, l'outre-mer est retiré, la densité est bien calculée, un code en double provoque une erreur |
-| `test_fusionner_population` | un code lu sans son zéro initial (`1001`) retrouve `01001` ; la jointure garde toutes les communes ; le journal compte les écarts |
-| `test_descriptif` | part de la population éloignée (80 % dans l'exemple) et part de communes équipées |
-| `test_chaine_complete_fictive` | toute la chaîne, des équipements à l'indice, sur 400 communes fictives : un hameau très isolé a bien l'indice le plus élevé |
+| `prepare_bpe` | le panier compte bien tous les services, et un code `TYPEQU` n'appartient pas à deux services |
+| `assembler_base` | tous les codes commune ont cinq caractères et aucun n'est en double |
+| notebook, base | les trois villes mères sont bien Paris, Lyon et Marseille ; les polygones des cartes portent exactement les mêmes codes que la table des communes ; aucun équipement n'a une commune inconnue |
+| notebook, distances | aucune distance n'est manquante ; avec la règle de présence, une commune équipée est bien à une distance nulle |
+| `indice_pondere` | un poids ne manque pour aucun service |
+| notebook, comparaisons | les indices A et B retrouvés dans le croisement des huit et des trente variantes sont identiques à ceux calculés directement (`np.allclose`) ; chaque service appartient à un besoin et un seul |
 
-: Les tests automatiques {#tbl-tests}
+: Les contrôles du code {#tbl-controles}
 
-Un test illustre bien l'intérêt de cette démarche. Dans `test_distances_regle_principale`, trois communes A, B et C sont placées sur des coordonnées simples. On calcule à la main que la distance de C à la pharmacie la plus proche est $\sqrt{10\,000^2 + 20\,000^2}/1\,000$ km, et on vérifie que le code donne bien ce résultat. Si quelqu'un modifie le code et casse la règle de distance, le test échoue immédiatement. Le dernier test est un test de bout en bout : on fabrique une petite France fictive avec un hameau placé très loin de tout, et on vérifie que l'indice le repère comme la commune la plus isolée.
+Le dernier contrôle est important pour la comparaison des méthodes : en recalculant A et B comme des cas particuliers du croisement des variantes, nous vérifions que le code qui produit les trente indices est cohérent avec celui des deux méthodes principales.

@@ -1,91 +1,81 @@
 # Facteurs de l'isolement {#sec-facteurs}
 
-Le chapitre précédent décrit l'isolement. Nous cherchons maintenant à savoir avec quoi il va de pair. Nous examinons deux caractéristiques des communes, la densité de population (hypothèse H2) et le niveau de vie (hypothèse H3), puis nous vérifions que ces résultats ne dépendent pas de la méthode de calcul de l'indice. Dans tout le chapitre, l'indice est celui de référence (règle de présence, poids égaux).
+Ce chapitre étudie les deux hypothèses sur les facteurs de l'isolement : le lien avec la densité de population (H2) et le lien avec le revenu (H3). Nous menons chaque analyse avec les trois indices, pour voir si la réponse dépend de la méthode.
 
-Nous utilisons la corrélation de Spearman et non celle de Pearson. Pearson mesure une relation en ligne droite entre les valeurs : comme la densité est très asymétrique, quelques communes très denses dominent le calcul. Spearman remplace chaque valeur par son rang puis calcule la corrélation des rangs. Elle ne dépend ni de l'échelle ni des valeurs extrêmes, et détecte toute relation qui va toujours dans le même sens. Elle vaut −1 (sens opposés), 0 (aucun lien) ou +1 (même ordre). Avec 34 000 communes, la p-value est minuscule pour presque n'importe quel lien : c'est donc la valeur de ρ qui compte, pas la p-value. Nous la complétons par le test de Kruskal-Wallis entre classes et sa taille d'effet $\varepsilon^2$ (voir la section [Outils statistiques](01-donnees-methodologie.qmd#sec-outils)).
+## Isolement et densité {#sec-densite}
 
-## Densité de population {#sec-densite}
+Nous mesurons le lien avec la corrélation de Spearman, qui compare des classements plutôt que des valeurs : la densité est si asymétrique (de 0 à plus de 38 000 habitants par km²) qu'une corrélation de Pearson serait dominée par quelques villes. Nous rangeons aussi les communes en cinq classes de densité de même effectif (quintiles) et nous comparons l'indice entre classes avec le test de Kruskal-Wallis et sa taille d'effet $\varepsilon^2$. Avec 35 000 communes, toutes les p-values sont minuscules : c'est la taille de l'effet qui compte.
 
-L'hypothèse H2 dit que plus une commune est peu dense, plus elle est isolée. Le lien est très net : le ρ de Spearman entre l'indice et la densité vaut −0,843 sur 34 788 communes. Nous répartissons ensuite les communes en cinq classes de densité de même effectif (les quintiles) et nous comparons l'indice entre les classes (@tbl-densite). Le test de Kruskal-Wallis donne $H = 23\,639$ et une taille d'effet $\varepsilon^2 = 0{,}68$, ce qui est très fort : la densité seule explique à peu près les deux tiers de la variation des rangs de l'indice.
+| Indice | ρ de Spearman | ε² de Kruskal-Wallis | Communes |
+|---|---|---|---|
+| A | −0,843 | 0,680 | 34 788 |
+| B | −0,826 | 0,654 | 34 788 |
+| C | −0,840 | 0,678 | 34 788 |
 
-| Classe de densité | Communes | Indice médian | 1ᵉʳ quartile | 3ᵉ quartile |
-|---|--:|--:|--:|--:|
-| 1 (20 % les moins denses) | 6 958 | 0,718 | 0,532 | 0,897 |
-| 2 | 6 957 | 0,431 | 0,241 | 0,602 |
-| 3 | 6 958 | 0,187 | −0,052 | 0,375 |
-| 4 | 6 957 | −0,156 | −0,497 | 0,085 |
-| 5 (20 % les plus denses) | 6 958 | −0,978 | −1,364 | −0,561 |
+: Lien entre l'indice et la densité {#tbl-densite}
 
-: Indice d'isolement selon la classe de densité {#tbl-densite}
+| Indice | 1 (moins denses) | 2 | 3 | 4 | 5 (plus denses) |
+|---|---|---|---|---|---|
+| A | 0,72 | 0,43 | 0,19 | −0,16 | −0,98 |
+| B | 0,75 | 0,44 | 0,16 | −0,20 | −0,98 |
+| C | 0,81 | 0,45 | 0,15 | −0,24 | −1,02 |
 
-L'indice médian passe de 0,72 pour les 20 % de communes les moins denses à −0,98 pour les 20 % les plus denses. La baisse est régulière sur les cinq classes, et c'est entre les deux dernières qu'elle est la plus forte. La @fig-densite illustre ce lien.
+: Indice médian par quintile de densité {#tbl-densite-quintiles}
 
-![Indice d'isolement et densité de population](figures/densite_indice.png){#fig-densite fig-alt="Trois graphiques liant l'indice d'isolement à la densité de population" width="100%"}
+![Indices A, B et C selon la densité des communes](figures/densite_A_B_C.png){#fig-densite}
 
-Ce résultat est logique : un service s'installe là où il y a assez d'habitants pour le faire vivre, donc les communes peu denses en ont moins sur place et doivent aller les chercher plus loin. Le lien reste une corrélation : il décrit ce que nous observons, il ne prouve pas que la faible densité est la cause de l'isolement. L'hypothèse H2 est confirmée.
+H2 est confirmée, avec les trois méthodes. Le lien entre densité et isolement est très fort : ρ = −0,84 avec A, −0,83 avec B et −0,84 avec C. La taille d'effet du test de Kruskal-Wallis est très élevée ($\varepsilon^2$ entre 0,65 et 0,68) : la classe de densité explique à elle seule environ deux tiers de la variation des rangs de l'indice. L'indice médian baisse régulièrement des communes les moins denses aux plus denses, avec les trois méthodes (@tbl-densite-quintiles, @fig-densite). L'écart est un peu plus grand avec C (de 0,81 à −1,02), qui sépare plus nettement les extrêmes.
 
-## Niveau de vie {#sec-revenu}
+C'est une corrélation, pas une preuve de causalité, mais le mécanisme est connu : un service s'installe là où il y a assez d'habitants pour le faire vivre.
 
-### Le revenu médian
+## Isolement et revenu {#sec-revenu}
 
-Nous utilisons le niveau de vie médian de chaque commune (indicateur `MED_SL` de Filosofi 2023). Il est disponible pour 30 812 communes sur 34 788. La médiane des niveaux de vie communaux est de 25 780 € (moyenne 26 270 €, écart-type 3 541 €). La plupart des communes se situent entre 24 090 € et 27 840 € (premier et troisième quartiles), et quelques communes très aisées tirent le maximum à 62 730 €. Les 3 976 communes sans revenu publié (11,4 %) le sont à cause du secret statistique : pour une très petite commune, publier la valeur permettrait de deviner les revenus des habitants.
+### Les communes sans revenu publié
 
-### Les communes sans revenu sont-elles différentes ?
+Nous ajoutons le niveau de vie médian de chaque commune (Filosofi 2023, indicateur `MED_SL`). Pour les petites communes, l'INSEE ne publie pas le revenu (secret statistique) : ces communes restent dans la base avec une case vide. Le revenu est publié pour 30 812 communes ; son niveau de vie médian est de 25 780 € en médiane et de 26 270 € en moyenne (écart-type de 3 541 €, de 12 420 € à 62 730 €).
 
-Ces communes ne sont pas un échantillon aléatoire. Leur indice médian est de 0,72, contre 0,07 pour les communes avec revenu (Kruskal-Wallis, p < 0,001, $\varepsilon^2 = 0{,}16$, effet fort). Elles ne regroupent en revanche que 0,44 % de la population. L'analyse du revenu porte donc sur un échantillon moins isolé que l'ensemble des communes, et ses conclusions ne s'appliquent pas aux communes les plus isolées.
+Les 3 976 communes sans revenu (11,4 %) sont nettement plus isolées que les autres, quelle que soit la méthode (@tbl-sans-revenu). Elles ne regroupent pourtant que 0,44 % de la population : ce sont les plus petites communes, couvertes par le secret statistique. L'analyse du revenu porte donc sur un ensemble de communes moins isolé que l'ensemble, et ne dit rien des communes les plus isolées.
 
-### Le lien entre isolement et revenu
+| Indice | Avec revenu | Sans revenu |
+|---|---|---|
+| A | 0,07 | 0,72 |
+| B | 0,02 | 0,76 |
+| C | 0,02 | 0,79 |
 
-Sur les 30 812 communes qui ont un revenu, le ρ de Spearman entre l'indice et le revenu vaut −0,216. Nous répartissons ces communes en cinq quintiles de revenu (@tbl-revenu). Le test de Kruskal-Wallis donne $H = 1\,554$ et $\varepsilon^2 = 0{,}05$.
+: Indice médian selon que le revenu est publié ou non {#tbl-sans-revenu}
 
-| Quintile de revenu | Communes | Indice médian | 1ᵉʳ quartile | 3ᵉ quartile |
-|---|--:|--:|--:|--:|
-| 1 (plus bas) | 6 163 | 0,285 | −0,576 | 0,621 |
-| 2 | 6 162 | 0,202 | −0,343 | 0,491 |
-| 3 | 6 162 | 0,132 | −0,328 | 0,431 |
-| 4 | 6 162 | 0,010 | −0,494 | 0,337 |
-| 5 (plus haut) | 6 163 | −0,233 | −0,782 | 0,147 |
+### Le lien entre l'indice et le revenu
 
-: Indice d'isolement selon le quintile de niveau de vie {#tbl-revenu}
+Nous mesurons ensuite le lien entre l'indice et le revenu, puis nous vérifions qu'il ne s'agit pas d'un simple effet de la densité. La densité est liée à l'isolement (section précédente) et au revenu (ρ = 0,35) : elle peut créer un lien apparent entre les deux, c'est ce qu'on appelle un facteur de confusion. Nous refaisons donc la corrélation à l'intérieur de chaque classe de densité, où la densité varie peu.
 
-![Indice d'isolement selon le quintile de niveau de vie](figures/revenu_indice.png){#fig-revenu fig-alt="Boîtes à moustaches de l'indice d'isolement par quintile de niveau de vie" width="70%"}
+| Indice | ρ de Spearman | ε² de Kruskal-Wallis | Communes |
+|---|---|---|---|
+| A | −0,216 | 0,050 | 30 812 |
+| B | −0,210 | 0,048 | 30 812 |
+| C | −0,306 | 0,095 | 30 812 |
 
-Plus le niveau de vie médian de la commune est élevé, moins elle tend à être isolée. L'écart s'accentue en haut de l'échelle : les écarts entre quintiles successifs sont de 0,08, 0,07, 0,12 puis 0,24. L'effet reste modeste : entre le premier et le dernier quintile, la médiane passe de 0,29 à −0,23, soit environ 0,5 point d'indice, et les boîtes se chevauchent largement. Le revenu ne permet pas de prédire l'isolement d'une commune donnée. Les communes les plus modestes sont aussi les plus hétérogènes : la boîte du quintile 1 est la plus large (de −0,58 à +0,62), alors que celle du quintile 5 est plus resserrée.
+: Lien entre l'indice et le revenu {#tbl-revenu}
 
-### Le rôle de la densité
+| Indice | 1 (plus modestes) | 2 | 3 | 4 | 5 (plus aisées) |
+|---|---|---|---|---|---|
+| A | 0,28 | 0,20 | 0,13 | 0,01 | −0,23 |
+| B | 0,25 | 0,18 | 0,10 | −0,03 | −0,29 |
+| C | 0,34 | 0,21 | 0,08 | −0,10 | −0,40 |
 
-La densité est liée à l'isolement, mais aussi au revenu (ρ = 0,347 entre le revenu et la densité). Une variable qui influence les deux à la fois peut créer un lien apparent entre elles : c'est un facteur de confusion. Pour le vérifier, nous refaisons la corrélation entre l'indice et le revenu à l'intérieur de chaque classe de densité (@tbl-confusion). Dans chaque classe, la densité varie peu : si le lien persistait, il ne viendrait pas seulement de la densité.
+: Indice médian par quintile de revenu {#tbl-revenu-quintiles}
 
-| Classe de densité | ρ (indice, revenu) | p-value | Communes |
-|---|--:|--:|--:|
-| 1 (20 % les moins denses) | −0,071 | < 0,001 | 3 968 |
-| 2 | 0,006 | 0,663 | 6 172 |
-| 3 | 0,052 | < 0,001 | 6 790 |
-| 4 | 0,153 | < 0,001 | 6 928 |
-| 5 (20 % les plus denses) | 0,294 | < 0,001 | 6 954 |
+| Indice | 1 (moins denses) | 2 | 3 | 4 | 5 (plus denses) |
+|---|---|---|---|---|---|
+| A | −0,071 | 0,006 | 0,052 | 0,153 | 0,294 |
+| B | −0,060 | 0,013 | 0,053 | 0,145 | 0,280 |
+| C | −0,153 | −0,116 | −0,113 | −0,043 | 0,165 |
 
-: Corrélation entre l'indice et le revenu dans chaque classe de densité {#tbl-confusion}
+: Corrélation de Spearman entre l'indice et le revenu, dans chaque classe de densité {#tbl-revenu-intra}
 
-Le lien négatif du début disparaît : ρ vaut −0,07 dans la classe la moins dense, puis 0,01, 0,05, 0,15 et 0,29 dans la plus dense. Le lien global entre isolement et revenu (ρ = −0,22) est donc surtout un effet de la densité : les territoires peu denses sont à la fois plus isolés et plus modestes. À densité comparable, le lien est proche de 0 dans les zones rurales et il devient même positif dans les zones denses : les communes les plus aisées tendent à y être un peu plus éloignées des services. On peut penser à des communes résidentielles de périphérie, mais nous ne l'avons pas vérifié. L'hypothèse H3 n'est donc que partiellement confirmée : il y a un lien global faible, qui vient surtout de la densité, et dont le signe change selon le type de territoire.
+**Avec A et B, H3 n'est que partiellement confirmée.** Globalement, les communes plus modestes sont un peu plus isolées (ρ = −0,22 et −0,21), mais l'effet est faible ($\varepsilon^2$ ≈ 0,05). Il vient surtout de la densité, liée à la fois au revenu et à l'isolement. À densité comparable, le lien disparaît (ρ proche de 0 dans les classes peu denses) puis devient positif dans les communes les plus denses (+0,28 à +0,29) : en ville, les communes aisées sont un peu plus loin des services, comme les couronnes résidentielles.
 
-## Stabilité selon la méthode de calcul {#sec-stabilite}
+**Avec C, le lien est nettement plus fort et résiste en partie à la densité.** Globalement, ρ = −0,31 et $\varepsilon^2$ = 0,095, soit deux fois plus qu'avec A et B. L'indice médian passe de 0,34 dans le quintile le plus modeste à −0,40 dans le plus aisé. À densité comparable, ρ reste négatif dans les quatre premières classes (−0,15, −0,12, −0,11, −0,04). Il n'est positif que dans les communes les plus denses (+0,17).
 
-Les corrélations précédentes ont été calculées avec l'indice de référence. Nous les refaisons avec les 12 indices du chapitre 1 (@tbl-rho-densite et @tbl-rho-revenu).
+C donne plus de poids à la gare et à l'hôpital. Le résultat suggère que c'est surtout l'éloignement de ces équipements rares, plus que celui des commerces ou des médecins, qui va de pair avec un revenu plus faible, même entre communes de densité semblable. Une explication possible, que nous n'avons pas vérifiée : les actifs plus aisés s'installent près des gares et des villes moyennes, où se concentrent aussi les emplois qualifiés.
 
-| Règle de distance | `egaux` | `vitaux` | `themes` | `acp` |
-|---|--:|--:|--:|--:|
-| `presence` | −0,843 | −0,843 | −0,836 | −0,839 |
-| `sans_regle_presence` | −0,861 | −0,858 | −0,855 | −0,859 |
-| `positions_AB` | −0,846 | −0,846 | −0,838 | −0,842 |
-
-: ρ de Spearman entre l'indice et la densité, pour les 12 indices {#tbl-rho-densite}
-
-| Règle de distance | `egaux` | `vitaux` | `themes` | `acp` |
-|---|--:|--:|--:|--:|
-| `presence` | −0,216 | −0,232 | −0,221 | −0,209 |
-| `sans_regle_presence` | −0,276 | −0,287 | −0,286 | −0,269 |
-| `positions_AB` | −0,223 | −0,240 | −0,226 | −0,215 |
-
-: ρ de Spearman entre l'indice et le revenu, pour les 12 indices {#tbl-rho-revenu}
-
-Pour la densité, ρ reste fortement négatif dans les 12 cas, entre −0,836 et −0,861. Pour le revenu, il reste négatif et faible, entre −0,209 et −0,287. La case `presence` avec `egaux` retrouve les valeurs de ce chapitre (−0,84 et −0,22). Les conclusions sur H2 et H3 ne dépendent donc pas de nos choix de méthode. La règle `sans_regle_presence` donne des corrélations un peu plus fortes dans les deux cas.
+Le diagnostic sur le revenu dépend donc de la méthode : faible et dû à la densité si l'on compte 19 services, plus marqué si l'on donne autant de poids à chaque grand besoin.

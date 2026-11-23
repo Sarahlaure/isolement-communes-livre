@@ -3,7 +3,7 @@ project:
 
 book:
   title: "Isolement des communes françaises"
-  subtitle: "Mesure des distances aux services de base et cartographie"
+  subtitle: "Trois façons de mesurer l'éloignement aux services du quotidien"
   author:
     - name: "Sarah-Laure FOGWOUNG DJOUFACK"
     - name: "Célina NGUEMFOUO NGOUMTSA"
@@ -24,13 +24,14 @@ book:
     - 02-code.qmd
     - 03-statistiques-descriptives.qmd
     - 04-facteurs-isolement.qmd
-    - 05-typologie.qmd
+    - 05-comparaison-methodes.qmd
     - 06-discussion-conclusion.qmd
-  appendices:
-    - A-types-bpe.qmd
-    - B-depot.qmd
-    - C-glossaire.qmd
-    - references.qmd
+    - part: "Annexes"
+      chapters:
+        - A-types-bpe.qmd
+        - B-depot.qmd
+        - C-glossaire.qmd
+        - references.qmd
 
 bibliography: references.bib
 

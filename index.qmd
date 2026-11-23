@@ -1,13 +1,11 @@
 ---
-title: ""
 page-layout: full
 toc: false
-number-sections: false
 title-block-style: none
 ---
 
 ::: {.cover-top}
-![](images/logo_ensae.png){fig-alt="Logos de l'ENSAE Paris, IP Paris et de l'Université Paris-Saclay"}
+![](images/logo_ecole.png){fig-alt="Logos de l'ENSAE Paris et de l'Institut Polytechnique de Paris"}
 
 ::: {.cours}
 Python pour la data science<br>2ᵉ année
@@ -18,11 +16,11 @@ Python pour la data science<br>2ᵉ année
 # Isolement des communes françaises {.cover-title .unnumbered .unlisted}
 
 ::: {.cover-subtitle}
-Mesure des distances aux services de base et cartographie
+Trois façons de mesurer l'éloignement aux services du quotidien
 :::
 
 ::: {.cover-question}
-À quelle distance de chez soi trouve-t-on les services du quotidien, et quelles communes sont les plus éloignées de tout ?
+À quelle distance de chez soi trouve-t-on les services du quotidien, quelles communes sont les plus éloignées de tout, et la réponse dépend-elle de la façon de mesurer ?
 :::
 :::
 
@@ -51,8 +49,8 @@ Mesure des distances aux services de base et cartographie
 
 ## Résumé {.unnumbered .unlisted}
 
-Ce rapport mesure l'éloignement des communes de France métropolitaine aux services de base. À partir de la Base permanente des équipements (BPE) 2025 de l'INSEE, nous calculons pour 34 788 communes et arrondissements municipaux la distance à vol d'oiseau jusqu'au plus proche de 19 services (boulangerie, pharmacie, médecin, école, poste, gare, urgences, maternité…), puis nous résumons ces distances dans un indice d'isolement.
+Ce rapport cherche à identifier les communes de France métropolitaine les plus éloignées des services de base, à savoir si cet éloignement va de pair avec une faible densité ou un faible revenu, et si la réponse dépend de la façon de le mesurer. À partir de la Base permanente des équipements 2025 de l'INSEE, nous calculons pour 34 788 communes et arrondissements la distance à vol d'oiseau jusqu'au plus proche de 19 services, puis nous la résumons par trois indices : A (centroïde, poids égaux), B (chef-lieu, services pondérés selon leur importance) et C (chef-lieu, six grands besoins de poids égal).
 
-L'indice est stable : la corrélation de Spearman entre 12 variantes de calcul (3 règles de distance et 4 jeux de poids) reste comprise entre 0,94 et 1 par rapport à la référence. Les communes les plus isolées sont très nombreuses (59 % ont un indice supérieur à la moyenne) mais peu peuplées (9,9 % de la population). L'isolement est fortement lié à la faible densité de population (ρ de Spearman = −0,84) et très faiblement au revenu médian (ρ = −0,22), un lien qui disparaît presque lorsqu'on compare des communes de même densité. Une typologie en quatre groupes distingue des pôles très bien desservis, des communes bien desservies pour le quotidien mais moyennement pour les services rares, des communes dans la moyenne et un rural isolé.
+Les trois indices classent les communes de façon proche (corrélation de Spearman de 0,98 entre A et B, de 0,95 entre B et C). Les communes isolées sont nombreuses (56 à 59 %) mais peu peuplées (9 à 10 % des habitants). L'isolement est fortement lié à la faible densité (ρ = −0,84 pour les trois indices), alors que son lien avec le revenu dépend de la méthode : faible avec A et B (ρ ≈ −0,21), plus net avec C (ρ = −0,31). Pour cibler les communes les plus isolées, le choix de méthode compte : seules 78 % des 10 % de communes les plus isolées sont communes à B et C. Nous retenons B comme indicateur de référence pour les services du quotidien et C comme éclairage sur l'accès aux grands équipements (gare, hôpital).
 
-*Mots-clés : isolement, services de base, accessibilité, communes, BPE, indice synthétique, typologie.*
+*Mots-clés : isolement, services de base, accessibilité, communes, BPE, indice synthétique, robustesse.*

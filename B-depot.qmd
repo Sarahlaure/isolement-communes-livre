@@ -3,28 +3,26 @@
 ## Organisation du dépôt
 
 ```
-isolement-communes/
+Projet-de-python-_-Isolement-communes/
 ├── README.md
-├── requirements.txt        bibliothèques nécessaires
+├── requirements.txt        bibliothèques nécessaires (dont py7zr)
 ├── rapport.ipynb           le rapport : appelle src/ et raconte l'analyse
 ├── src/
-│   ├── download.py         télécharge les fichiers INSEE dans data/raw/
-│   ├── inspect_bpe.py      inspecte la BPE (colonnes, codes du panier)
+│   ├── download.py         télécharge les données dans data/raw/
 │   ├── prepare_bpe.py      filtre la BPE sur le panier, écrit data/interim/
-│   ├── communes.py         table des communes (centre, surface, population)
+│   ├── communes.py         table des communes (centroïde, chef-lieu, surface, population)
 │   ├── distances.py        présence des services et distances
-│   ├── indice.py           indice d'isolement
+│   ├── indice.py           indices, grille experte, besoins
 │   ├── descriptif.py       statistiques descriptives
-│   └── analyse.py          revenu, corrélations, tests, typologie
-├── tests/                  tests automatiques (pytest)
-├── docs/                   guide des données et organisation du travail
+│   └── analyse.py          revenu, corrélations, tests
+├── figures/                figures enregistrées par le notebook
 └── data/
     ├── raw/                données brutes, jamais modifiées (non versionnées)
     ├── interim/            données nettoyées (non versionnées)
     └── processed/          tableaux finaux, une ligne par commune (non versionnés)
 ```
 
-Les données brutes ne sont pas versionnées car les fichiers sont lourds. Le fichier `BPE25.parquet` fait 163 Mo.
+Les données brutes ne sont pas versionnées car les fichiers sont lourds. Le fichier `BPE25.parquet` fait environ 170 Mo et le GeoPackage de l'IGN 1,1 Go.
 
 ## Reproduire les résultats
 
@@ -40,18 +38,13 @@ python -m venv .venv
 source .venv/bin/activate          # Windows : .venv\Scripts\activate
 pip install -r requirements.txt
 
-# 3. Télécharger les données INSEE (data/raw/)
-python src/download.py
-#    puis placer à la main dans data/raw/ : population, contours IGN, Filosofi
-
-# 4. Nettoyer la BPE (data/interim/equipements.parquet)
-python src/prepare_bpe.py
-
-# 5. Ouvrir le rapport et tout exécuter (Run All)
+# 3. Ouvrir le rapport et exécuter toutes les cellules (Run All) :
+#    le notebook télécharge les données dans data/raw/, nettoie la BPE
+#    dans data/interim/, puis écrit les tableaux finaux dans data/processed/
 jupyter lab
 ```
 
-Les tests se lancent avec la commande `pytest`.
+Le premier lancement prend quelques minutes, car il faut télécharger environ 400 Mo de données.
 
 ## Reconstruire ce site
 

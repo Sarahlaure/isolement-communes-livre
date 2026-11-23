@@ -6,7 +6,13 @@
 
 **BPE (Base permanente des équipements).** Base de l'INSEE qui recense les équipements et services accessibles au public.
 
-**Centroïde.** Centre géométrique d'un polygone. Nous l'utilisons comme point de départ de chaque commune.
+**Besoin.** Regroupement de services qui répondent à une même nécessité de la vie courante (faire ses courses, se soigner au quotidien…). La méthode C en retient six.
+
+**Centile.** Rang d'une commune ramené à 100 : un centile de 90 signifie que la commune est plus isolée que 90 % des communes.
+
+**Centroïde.** Centre géométrique d'un polygone. Il est le point de départ de la méthode A.
+
+**Chef-lieu.** Point que l'IGN place au bourg principal d'une commune. Il est le point de départ des méthodes B et C.
 
 **Corrélation de Spearman.** Corrélation calculée sur les rangs des valeurs. Elle vaut −1, 0 ou +1 et mesure si deux variables évoluent dans le même sens, sans supposer de relation linéaire.
 
@@ -16,9 +22,7 @@
 
 **Filosofi.** Fichier de l'INSEE sur les revenus localisés. Nous en tirons le niveau de vie médian (`MED_SL`).
 
-**Inertie.** Somme des carrés des écarts entre chaque point et le centre de son groupe. Elle baisse quand le nombre de groupes augmente.
-
-**k-means (k-moyennes).** Algorithme de classification qui forme $k$ groupes en rapprochant chaque point du centre de groupe le plus proche.
+**Indicatrice de présence.** Règle de la méthode A qui met la distance à 0 quand la commune possède le service.
 
 **Kruskal-Wallis.** Test qui compare la distribution d'une variable entre plusieurs groupes, sans supposer qu'elle est normale.
 
@@ -26,9 +30,9 @@
 
 **Médiane.** Valeur qui sépare les observations en deux moitiés de même effectif.
 
-**Quintile.** Chacune des cinq classes de même effectif obtenues en découpant les observations selon une variable.
+**Melodi.** Interface de programmation de l'INSEE par laquelle le notebook récupère Filosofi.
 
-**Silhouette.** Indicateur entre −1 et 1 qui mesure si les groupes sont bien séparés.
+**Quintile.** Chacune des cinq classes de même effectif obtenues en découpant les observations selon une variable.
 
 **TYPEQU.** Code à quatre caractères qui désigne le type d'un équipement dans la BPE (par exemple D307 pour une pharmacie).
 
