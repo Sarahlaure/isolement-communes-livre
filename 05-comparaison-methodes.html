@@ -1,0 +1,1687 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.11.9">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>5&nbsp; Comparaison des méthodes – Isolement des communes françaises</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./06-discussion-conclusion.html" rel="next">
+<link href="./04-facteurs-isolement.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-6c0e92cf298b34d9dd862c5af3dd7c1a.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-591f8ab0a63e32faefc2fcbefbeb5029.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Pas de résultats",
+    "search-matching-documents-text": "documents trouvés",
+    "search-copy-link-title": "Copier le lien vers la recherche",
+    "search-hide-matches-text": "Cacher les correspondances additionnelles",
+    "search-more-match-text": "correspondance de plus dans ce document",
+    "search-more-matches-text": "correspondances de plus dans ce document",
+    "search-clear-button-title": "Effacer",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Annuler",
+    "search-submit-button-title": "Envoyer",
+    "search-label": "Recherche"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar docked quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Aller au contenu principal</a>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" aria-label="Barre d'outils">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="Fil d'Ariane"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./05-comparaison-methodes.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Comparaison des méthodes</span></a></li></ol></nav>
+        <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Recherche" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto" aria-label="Site web">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Isolement des communes françaises</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/Sarahlaure/Projet-de-python-_-Isolement-communes" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Recherche"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Isolement des communes françaises</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-donnees-methodologie.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Données et méthodologie</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-code.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Le code</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-statistiques-descriptives.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Statistiques descriptives et indices</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-facteurs-isolement.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Facteurs de l’isolement</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-comparaison-methodes.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Comparaison des méthodes</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-discussion-conclusion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Discussion et conclusion</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-controls="quarto-sidebar-section-1" aria-expanded="false">
+ <span class="menu-text" id="quarto-sidebar-section-1-label">Annexes</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-1" aria-labelledby="quarto-sidebar-section-1-label" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./A-types-bpe.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dictionnaire des types BPE</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./B-depot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Organisation du dépôt et reproduction</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./C-glossaire.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Glossaire</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bibliographie</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
+    <h2 id="toc-title">Dans ce chapitre</h2>
+   
+  <ul>
+  <li><a href="#sec-ressemblance" id="toc-sec-ressemblance" class="nav-link active" data-scroll-target="#sec-ressemblance"><span class="header-section-number">1</span> A et B : les classements se ressemblent-ils ?</a></li>
+  <li><a href="#sec-decomposition" id="toc-sec-decomposition" class="nav-link" data-scroll-target="#sec-decomposition"><span class="header-section-number">2</span> Le point de départ, l’indicatrice ou les poids ?</a></li>
+  <li><a href="#sec-listes" id="toc-sec-listes" class="nav-link" data-scroll-target="#sec-listes"><span class="header-section-number">3</span> Les communes les plus isolées sont-elles les mêmes ?</a></li>
+  <li><a href="#sec-mouvements" id="toc-sec-mouvements" class="nav-link" data-scroll-target="#sec-mouvements"><span class="header-section-number">4</span> Quelles communes changent de rang, et pourquoi ?</a></li>
+  <li><a href="#sec-robustesse-resultats" id="toc-sec-robustesse-resultats" class="nav-link" data-scroll-target="#sec-robustesse-resultats"><span class="header-section-number">5</span> Une robustesse élargie : 30 indices</a></li>
+  <li><a href="#sec-conclusions-methode" id="toc-sec-conclusions-methode" class="nav-link" data-scroll-target="#sec-conclusions-methode"><span class="header-section-number">6</span> Les conclusions changent-elles avec la méthode ?</a></li>
+  <li><a href="#sec-C-comparaison" id="toc-sec-C-comparaison" class="nav-link" data-scroll-target="#sec-C-comparaison"><span class="header-section-number">7</span> Et la méthode C ?</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/Sarahlaure/Projet-de-python-_-Isolement-communes/blob/main/05-comparaison-methodes.qmd" class="toc-action"><i class="bi bi-github"></i>Voir la source</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content" tabindex="-1">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-comparaison" class="quarto-section-identifier"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Comparaison des méthodes</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Les chapitres précédents donnent trois images de l’isolement. Ce chapitre cherche à savoir à quel point elles diffèrent, pour quelles communes, et lequel des choix (point de départ, indicatrice, poids, agrégation) est responsable des différences. Nous comparons d’abord A et B, qui diffèrent par le point de départ, l’indicatrice et les poids, puis nous situons C. C’est l’objet de l’hypothèse H4.</p>
+<section id="sec-ressemblance" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="sec-ressemblance"><span class="header-section-number">1</span> A et B : les classements se ressemblent-ils ?</h2>
+<p>La corrélation de Spearman entre A et B mesure la ressemblance des classements. Nous regardons aussi le tableau croisé des déciles : la part des communes qui restent dans le même dixième de la distribution, ou qui ne bougent que d’un décile.</p>
+<div id="fig-comparaison-rangs" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-comparaison-rangs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/comparaison_rangs.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-comparaison-rangs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Rang de chaque commune selon A et B, et destination des communes de chaque décile A
+</figcaption>
+</figure>
+</div>
+<p>Les deux classements sont très proches : la corrélation de Spearman est de 0,981. Dans le tableau croisé des déciles (<a href="#fig-comparaison-rangs" class="quarto-xref">figure&nbsp;<span>1</span></a>), 68,3 % des communes restent dans le même décile, 97,1 % bougent d’au plus un décile, et 0,6 % (environ 200 communes) bougent de trois déciles ou plus.</p>
+<p>Le nuage de points montre que les écarts ne sont pas répartis au hasard. Ils sont plus forts au milieu de la distribution qu’aux extrémités. Les communes très bien desservies (les villes, qui ont presque tout sur place) et les communes très isolées gardent leur place. Au milieu, de petites différences de distance suffisent à faire bouger le rang.</p>
+</section>
+<section id="sec-decomposition" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="sec-decomposition"><span class="header-section-number">2</span> Le point de départ, l’indicatrice ou les poids ?</h2>
+<p>A et B diffèrent sur trois choix à la fois. Pour séparer leurs effets, nous calculons les <span class="math inline">\(2 \times 2 \times 2 = 8\)</span> indices qui combinent le point de départ <span class="math inline">\(x\)</span> (centroïde ou chef-lieu), la règle <span class="math inline">\(r\)</span> (avec indicatrice de présence ou sans) et les poids <span class="math inline">\(w\)</span> (égaux ou experts). Nous notons <span class="math inline">\(I_c^{(x,\,r,\,w)}\)</span> l’indice correspondant, de sorte que <span class="math inline">\(A = I^{(x^A,\,r^A,\,w^A)}\)</span> et <span class="math inline">\(B = I^{(x^B,\,r^B,\,w^B)}\)</span>. L’écart de classement entre deux indices est mesuré par <span class="math inline">\(1 - \rho_S\)</span>, où <span class="math inline">\(\rho_S\)</span> est la corrélation de Spearman (0 si le classement est identique). En partant de A et en ne changeant qu’un ingrédient à la fois, nous voyons lequel déplace le plus le classement.</p>
+<div id="tbl-huit" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-huit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;1: Corrélation de Spearman de chacun des huit indices avec A
+</figcaption>
+<div aria-describedby="tbl-huit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Point de départ</th>
+<th>Règle</th>
+<th>Poids égaux</th>
+<th>Poids experts</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>centroïde</td>
+<td>présence</td>
+<td>1,000</td>
+<td>0,998</td>
+</tr>
+<tr class="even">
+<td>centroïde</td>
+<td>sans présence</td>
+<td>0,963</td>
+<td>0,963</td>
+</tr>
+<tr class="odd">
+<td>chef-lieu</td>
+<td>présence</td>
+<td>0,987</td>
+<td>0,985</td>
+</tr>
+<tr class="even">
+<td>chef-lieu</td>
+<td>sans présence</td>
+<td>0,982</td>
+<td>0,981</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<div id="tbl-effets" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-effets-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;2: Ce qui éloigne le classement de A
+</figcaption>
+<div aria-describedby="tbl-effets-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Changement par rapport à A</th>
+<th>1 − ρ avec A</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>poids seulement</td>
+<td>0,0025</td>
+</tr>
+<tr class="even">
+<td>indicatrice seulement (centroïde sans présence)</td>
+<td>0,0366</td>
+</tr>
+<tr class="odd">
+<td>point de départ seulement (chef-lieu avec présence)</td>
+<td>0,0125</td>
+</tr>
+<tr class="even">
+<td>point de départ et indicatrice</td>
+<td>0,0176</td>
+</tr>
+<tr class="odd">
+<td>les trois (A vers B)</td>
+<td>0,0194</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<div id="fig-decomposition" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-decomposition-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/decomposition.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-decomposition-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Ce qui éloigne le classement B du classement A
+</figcaption>
+</figure>
+</div>
+<p>Pris isolément, enlever l’indicatrice depuis le centroïde est le changement le plus perturbateur, mais il ne l’est plus depuis le chef-lieu (<a href="#tbl-effets" class="quarto-xref">tableau&nbsp;<span>2</span></a>). En partant de A et en ne changeant qu’un ingrédient :</p>
+<ul>
+<li>changer les poids : 0,0025, le classement ne bouge presque pas ;</li>
+<li>changer le point de départ : 0,0125, soit cinq fois plus que les poids ;</li>
+<li>enlever l’indicatrice depuis le centroïde : 0,0366, l’effet le plus fort.</li>
+</ul>
+<p>Mais l’effet de l’indicatrice dépend du point de départ. L’enlever coûte 0,0366 depuis le centroïde, et seulement 0,0037 depuis le chef-lieu, soit dix fois moins. Depuis le centroïde, point arbitraire, la distance réelle à l’équipement de la commune est un artefact de la forme du territoire, d’où l’utilité de l’indicatrice. Depuis le chef-lieu, cette distance est faible et a un sens (chapitre <a href="03-statistiques-descriptives.html#sec-resultats-B">3</a>), si bien que l’indicatrice n’apporte presque rien. C’est ce qui justifie de l’enlever dans la méthode B.</p>
+<p>Au total, A vers B donne 0,0194 (ρ = 0,981), dont l’essentiel vient du changement de point de départ. Les poids comptent peu pour deux raisons. La grille experte redistribue surtout le poids à l’intérieur des thèmes. Et les 19 distances varient ensemble (la première composante de l’ACP en résume 51 %) : toute pondération à poids positifs classe les communes dans un ordre voisin.</p>
+</section>
+<section id="sec-listes" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="sec-listes"><span class="header-section-number">3</span> Les communes les plus isolées sont-elles les mêmes ?</h2>
+<p>Pour l’action publique, ce qui compte souvent est la liste des communes les plus isolées, par exemple pour cibler une aide. Nous comparons les 10 % de communes les plus isolées selon A et selon B : combien sont communes aux deux listes, et combien d’habitants chacune représente.</p>
+<p>Sur les 3 479 communes les plus isolées (10 %), 3 044 sont les mêmes avec A et B (87,5 % de recouvrement), et 435 changent. La population couverte est de 486 434 habitants avec A, de 491 710 avec B, et de 407 668 pour les communes présentes dans les deux listes.</p>
+<div id="tbl-recouvrement" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-recouvrement-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;3: Recouvrement des listes de communes les plus isolées selon A et B
+</figcaption>
+<div aria-describedby="tbl-recouvrement-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>1 %</th>
+<th>5 %</th>
+<th>10 %</th>
+<th>25 %</th>
+<th>50 %</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Communes présentes dans les deux listes (%)</td>
+<td>80,2</td>
+<td>83,9</td>
+<td>87,5</td>
+<td>90,7</td>
+<td>94,9</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>Pour cibler les communes à aider, le choix de méthode compte donc un peu plus que ne le laisse penser la corrélation globale. Plus la liste est courte, plus le désaccord est grand : le recouvrement est de 84 % pour les 5 % les plus isolées et de 80 % pour le 1 % le plus isolé. Une politique qui viserait les 350 communes les plus isolées en désignerait environ 70 différentes selon la méthode. Ces listes couvrent un peu moins de 500 000 habitants.</p>
+</section>
+<section id="sec-mouvements" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="sec-mouvements"><span class="header-section-number">4</span> Quelles communes changent de rang, et pourquoi ?</h2>
+<p>Nous calculons pour chaque commune le changement de centile entre A et B (positif si la commune est plus isolée selon B). Nous regardons si les grands changements s’expliquent par l’écart entre centroïde et chef-lieu, par la surface ou par la population.</p>
+<div id="tbl-liens-mouvement" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-liens-mouvement-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;4: Ce qui accompagne les changements de rang entre A et B
+</figcaption>
+<div aria-describedby="tbl-liens-mouvement-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Lien avec le changement de centile (en valeur absolue)</th>
+<th>ρ de Spearman</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>écart centroïde et chef-lieu</td>
+<td>0,227</td>
+</tr>
+<tr class="even">
+<td>surface</td>
+<td>0,040</td>
+</tr>
+<tr class="odd">
+<td>population</td>
+<td>−0,102</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<div id="tbl-mouvement-ecart" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-mouvement-ecart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;5: Changement de centile selon l’écart entre le centroïde et le chef-lieu
+</figcaption>
+<div aria-describedby="tbl-mouvement-ecart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Écart entre les deux points</th>
+<th>&lt; 0,5 km</th>
+<th>0,5-1 km</th>
+<th>1-2 km</th>
+<th>2-5 km</th>
+<th>&gt; 5 km</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Communes</td>
+<td>10 218</td>
+<td>12 722</td>
+<td>9 404</td>
+<td>2 319</td>
+<td>125</td>
+</tr>
+<tr class="even">
+<td>Changement absolu médian (centiles)</td>
+<td>1,8</td>
+<td>2,3</td>
+<td>3,0</td>
+<td>4,1</td>
+<td>7,0</td>
+</tr>
+<tr class="odd">
+<td>Changement moyen signé (centiles)</td>
+<td>1,3</td>
+<td>0,6</td>
+<td>−1,0</td>
+<td>−4,4</td>
+<td>−11,0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>Les communes dont le centroïde est loin du chef-lieu deviennent moins isolées avec B. Quand l’écart entre les deux points dépasse 5 km, le centile baisse de 11 points en moyenne (−4,4 entre 2 et 5 km). Quand l’écart est faible, il monte légèrement (+1,3 sous 0,5 km). Comme nous comparons des rangs, les communes qui reculent font mécaniquement monter les autres. L’ampleur du changement est d’abord liée à l’écart entre les deux points (Spearman de 0,23).</p>
+<div id="tbl-mouvements" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-mouvements-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;6: Les huit communes qui montent le plus et les huit qui baissent le plus entre A et B
+</figcaption>
+<div aria-describedby="tbl-mouvements-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Commune</th>
+<th>Population</th>
+<th>Centile A</th>
+<th>Centile B</th>
+<th>Changement</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Prunelli-di-Fiumorbo</td>
+<td>3 880</td>
+<td>7,5</td>
+<td>72,8</td>
+<td>+65,3</td>
+</tr>
+<tr class="even">
+<td>Pietrosella</td>
+<td>2 074</td>
+<td>29,8</td>
+<td>82,8</td>
+<td>+53,0</td>
+</tr>
+<tr class="odd">
+<td>Villemaury</td>
+<td>1 283</td>
+<td>43,3</td>
+<td>92,8</td>
+<td>+49,4</td>
+</tr>
+<tr class="even">
+<td>Peri</td>
+<td>2 044</td>
+<td>15,8</td>
+<td>62,7</td>
+<td>+46,9</td>
+</tr>
+<tr class="odd">
+<td>Mansac</td>
+<td>1 554</td>
+<td>10,5</td>
+<td>56,0</td>
+<td>+45,4</td>
+</tr>
+<tr class="even">
+<td>Castello-di-Rostino</td>
+<td>522</td>
+<td>48,2</td>
+<td>92,7</td>
+<td>+44,4</td>
+</tr>
+<tr class="odd">
+<td>Val-Cenis</td>
+<td>2 112</td>
+<td>37,4</td>
+<td>78,3</td>
+<td>+40,9</td>
+</tr>
+<tr class="even">
+<td>Calmont</td>
+<td>2 192</td>
+<td>26,9</td>
+<td>67,1</td>
+<td>+40,3</td>
+</tr>
+<tr class="odd">
+<td>Naussac-Fontanes</td>
+<td>372</td>
+<td>86,9</td>
+<td>17,8</td>
+<td>−69,1</td>
+</tr>
+<tr class="even">
+<td>Le Malzieu-Forain</td>
+<td>484</td>
+<td>93,1</td>
+<td>25,8</td>
+<td>−67,2</td>
+</tr>
+<tr class="odd">
+<td>Belvédère</td>
+<td>601</td>
+<td>82,3</td>
+<td>19,8</td>
+<td>−62,5</td>
+</tr>
+<tr class="even">
+<td>Ascou</td>
+<td>113</td>
+<td>97,1</td>
+<td>35,8</td>
+<td>−61,2</td>
+</tr>
+<tr class="odd">
+<td>Vielle-Aure</td>
+<td>315</td>
+<td>92,2</td>
+<td>32,1</td>
+<td>−60,1</td>
+</tr>
+<tr class="even">
+<td>Louvie-Soubiron</td>
+<td>133</td>
+<td>97,2</td>
+<td>38,0</td>
+<td>−59,2</td>
+</tr>
+<tr class="odd">
+<td>Aston</td>
+<td>197</td>
+<td>99,0</td>
+<td>41,5</td>
+<td>−57,4</td>
+</tr>
+<tr class="even">
+<td>Osse-en-Aspe</td>
+<td>330</td>
+<td>82,3</td>
+<td>25,8</td>
+<td>−56,5</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>Les plus fortes baisses (−56 à −69 centiles) sont des communes de montagne dont le bourg est dans une vallée équipée et le centroïde en altitude : Vielle-Aure (Hautes-Pyrénées), Aston et Ascou (Ariège), Louvie-Soubiron et Osse-en-Aspe (Pyrénées-Atlantiques), Belvédère (Alpes-Maritimes). On y trouve aussi des communes de Lozère dont le chef-lieu touche un bourg équipé voisin : Naussac-Fontanes à côté de Langogne, Le Malzieu-Forain à côté du Malzieu-Ville. Selon A, elles faisaient partie des 20 % les plus isolées. Selon B, elles sont dans la moitié la moins isolée.</p>
+<p>Les plus fortes hausses (+40 à +65 centiles) révèlent la limite de B : le chef-lieu n’est pas toujours là où vivent les habitants.</p>
+<ul>
+<li>En Corse, Prunelli-di-Fiumorbo, Pietrosella, Peri et Castello-di-Rostino ont gardé leur chef-lieu dans le village perché historique, alors que la population et les commerces sont descendus vers la plaine ou la côte (Migliacciaro pour Prunelli-di-Fiumorbo). Sans l’indicatrice, les services de la commune comptent pour leur distance réelle au chef-lieu, qui est grande.</li>
+<li>Les communes nouvelles, nées de la fusion de plusieurs communes, comme Val-Cenis (Savoie) ou Villemaury (Eure-et-Loir), n’ont qu’un chef-lieu, alors que leurs services sont répartis entre les anciens villages.</li>
+</ul>
+<p>Ces communes de 500 à 3 900 habitants passent du milieu au haut du classement. Pour elles, A, qui met les services présents à 0, est sans doute plus juste que B.</p>
+</section>
+<section id="sec-robustesse-resultats" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="sec-robustesse-resultats"><span class="header-section-number">5</span> Une robustesse élargie : 30 indices</h2>
+<p>A et B ne sont que deux combinaisons parmi beaucoup d’autres possibles. Nous avons croisé deux points de départ, trois règles de distance et cinq jeux de poids (section <a href="01-donnees-methodologie.html#sec-robustesse">Tester la solidité de l’indice</a>), ce qui donne 30 indices, comparés à A et à B.</p>
+<div id="tbl-trente-A" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-trente-A-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;7: Corrélation de Spearman de chacun des 30 indices avec la méthode A
+</figcaption>
+<div aria-describedby="tbl-trente-A-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Point de départ</th>
+<th>Règle</th>
+<th>Égaux</th>
+<th>Experts</th>
+<th>Vitaux</th>
+<th>Thèmes</th>
+<th>ACP</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>centroïde</td>
+<td>positions_AB</td>
+<td>0,996</td>
+<td>0,995</td>
+<td>0,991</td>
+<td>0,976</td>
+<td>0,996</td>
+</tr>
+<tr class="even">
+<td>centroïde</td>
+<td>présence</td>
+<td>1,000</td>
+<td>0,998</td>
+<td>0,996</td>
+<td>0,979</td>
+<td>0,999</td>
+</tr>
+<tr class="odd">
+<td>centroïde</td>
+<td>sans présence</td>
+<td>0,963</td>
+<td>0,963</td>
+<td>0,960</td>
+<td>0,940</td>
+<td>0,964</td>
+</tr>
+<tr class="even">
+<td>chef-lieu</td>
+<td>positions_AB</td>
+<td>0,985</td>
+<td>0,983</td>
+<td>0,981</td>
+<td>0,966</td>
+<td>0,984</td>
+</tr>
+<tr class="odd">
+<td>chef-lieu</td>
+<td>présence</td>
+<td>0,987</td>
+<td>0,985</td>
+<td>0,984</td>
+<td>0,968</td>
+<td>0,986</td>
+</tr>
+<tr class="even">
+<td>chef-lieu</td>
+<td>sans présence</td>
+<td>0,982</td>
+<td>0,981</td>
+<td>0,979</td>
+<td>0,963</td>
+<td>0,981</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<div id="tbl-trente-B" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-trente-B-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;8: Corrélation de Spearman de chacun des 30 indices avec la méthode B
+</figcaption>
+<div aria-describedby="tbl-trente-B-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Point de départ</th>
+<th>Règle</th>
+<th>Égaux</th>
+<th>Experts</th>
+<th>Vitaux</th>
+<th>Thèmes</th>
+<th>ACP</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>centroïde</td>
+<td>positions_AB</td>
+<td>0,976</td>
+<td>0,978</td>
+<td>0,972</td>
+<td>0,957</td>
+<td>0,977</td>
+</tr>
+<tr class="even">
+<td>centroïde</td>
+<td>présence</td>
+<td>0,981</td>
+<td>0,982</td>
+<td>0,977</td>
+<td>0,960</td>
+<td>0,981</td>
+</tr>
+<tr class="odd">
+<td>centroïde</td>
+<td>sans présence</td>
+<td>0,945</td>
+<td>0,948</td>
+<td>0,942</td>
+<td>0,922</td>
+<td>0,947</td>
+</tr>
+<tr class="even">
+<td>chef-lieu</td>
+<td>positions_AB</td>
+<td>0,991</td>
+<td>0,992</td>
+<td>0,987</td>
+<td>0,971</td>
+<td>0,991</td>
+</tr>
+<tr class="odd">
+<td>chef-lieu</td>
+<td>présence</td>
+<td>0,995</td>
+<td>0,996</td>
+<td>0,992</td>
+<td>0,974</td>
+<td>0,995</td>
+</tr>
+<tr class="even">
+<td>chef-lieu</td>
+<td>sans présence</td>
+<td>0,998</td>
+<td>1,000</td>
+<td>0,993</td>
+<td>0,977</td>
+<td>0,998</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>Les 30 indices restent tous très corrélés : la plus faible corrélation entre deux d’entre eux est de 0,92, au-dessus du seuil usuel de 0,9 pour des classements très proches. Quatre enseignements se dégagent.</p>
+<ol type="1">
+<li>Les jeux de poids comptent peu, sauf le jeu « thèmes », qui donne à la gare seule le poids de tout un thème (20 %). C’est le jeu le plus éloigné, avec 0,98 avec A et avec B sur la même ligne. Les poids de l’ACP sont presque des poids égaux (0,999 avec A) : la première composante explique 51 à 54 % de la variance dans les six configurations.</li>
+<li>Avec le chef-lieu, garder ou enlever l’indicatrice ne change presque rien : 0,996 avec B pour la variante <code>presence</code>. Avec le centroïde, enlever l’indicatrice change nettement le classement : 0,963 avec A. La méthode B est donc peu sensible à ce choix, ce qui n’est pas le cas d’un indice construit sur le centroïde.</li>
+<li>Les positions de moindre qualité (<code>M</code> et <code>_U</code>) ne faussent pas le résultat : ne garder que les positions <code>A</code> et <code>B</code> donne 0,996 avec A (centroïde) et 0,992 avec B (chef-lieu).</li>
+<li>Le point de départ reste le choix qui sépare le plus les familles d’indices : tous les indices calculés depuis le centroïde sont à 0,92 à 0,98 de B, tous ceux calculés depuis le chef-lieu à 0,97 à 1,00.</li>
+</ol>
+</section>
+<section id="sec-conclusions-methode" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="sec-conclusions-methode"><span class="header-section-number">6</span> Les conclusions changent-elles avec la méthode ?</h2>
+<p>La question la plus importante est de savoir si nos conclusions sur la densité (H2) et le revenu (H3) tiennent quel que soit l’indice. Nous recalculons les deux corrélations pour les 30 indices.</p>
+<div id="tbl-etendue" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-etendue-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;9: Étendue des corrélations sur les 30 indices
+</figcaption>
+<div aria-describedby="tbl-etendue-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Minimum</th>
+<th>Médiane</th>
+<th>Maximum</th>
+<th>A</th>
+<th>B</th>
+<th>C</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>ρ avec la densité</td>
+<td>−0,861</td>
+<td>−0,834</td>
+<td>−0,822</td>
+<td>−0,843</td>
+<td>−0,826</td>
+<td>−0,840</td>
+</tr>
+<tr class="even">
+<td>ρ avec le revenu</td>
+<td>−0,287</td>
+<td>−0,222</td>
+<td>−0,197</td>
+<td>−0,216</td>
+<td>−0,210</td>
+<td>−0,306</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>Pour la densité, la conclusion ne dépend pas de la méthode. Sur les 30 variantes de A et B, la corrélation avec la densité reste comprise entre −0,82 et −0,86. C est dans cet intervalle (−0,84). Pour le revenu, elle dépend de l’agrégation. Sur les 30 variantes, la corrélation avec le revenu va de −0,20 à −0,29 : faible et négative partout. A (−0,22) et B (−0,21) sont dans cet intervalle. C en sort, à −0,31. Aucune variante de point de départ, d’indicatrice ou de poids par service ne donne un lien aussi fort que le regroupement en besoins.</p>
+</section>
+<section id="sec-C-comparaison" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="sec-C-comparaison"><span class="header-section-number">7</span> Et la méthode C ?</h2>
+<p>C reprend les distances de B et ne change que l’agrégation : six besoins à poids égaux au lieu de 19 services pondérés. Nous mesurons à quel point cela change le classement, quelles communes sont concernées, et pourquoi.</p>
+<div id="tbl-spearman-ABC" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-spearman-ABC-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;10: Corrélation de Spearman entre les trois indices
+</figcaption>
+<div aria-describedby="tbl-spearman-ABC-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th>A</th>
+<th>B</th>
+<th>C</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td>1,000</td>
+<td>0,981</td>
+<td>0,946</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td>0,981</td>
+<td>1,000</td>
+<td>0,954</td>
+</tr>
+<tr class="odd">
+<td>C</td>
+<td>0,946</td>
+<td>0,954</td>
+<td>1,000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<div id="tbl-recouvrement-ABC" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-recouvrement-ABC-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;11: Communes présentes dans les deux listes (%)
+</figcaption>
+<div aria-describedby="tbl-recouvrement-ABC-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Paire</th>
+<th>1 % les plus isolées</th>
+<th>10 % les plus isolées</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A et B</td>
+<td>80,2</td>
+<td>87,5</td>
+</tr>
+<tr class="even">
+<td>B et C</td>
+<td>71,6</td>
+<td>78,4</td>
+</tr>
+<tr class="odd">
+<td>A et C</td>
+<td>69,3</td>
+<td>78,2</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>C est la méthode qui s’écarte le plus des deux autres. Sa corrélation de rangs est de 0,954 avec B et 0,946 avec A, contre 0,981 entre A et B. Le changement de centile médian entre B et C est de 4,8 points, deux fois plus qu’entre A et B (2,3). Les listes de communes les plus isolées divergent aussi davantage : seulement 78 % de recouvrement entre B et C sur les 10 % les plus isolées (contre 87,5 % entre A et B), et 72 % sur le 1 %. Changer l’agrégation pèse donc plus que changer le point de départ ou les poids service par service.</p>
+<div id="tbl-besoins-mouvement" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-besoins-mouvement-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;12: Ce qui fait bouger les communes de B à C
+</figcaption>
+<div aria-describedby="tbl-besoins-mouvement-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Besoin</th>
+<th>ρ avec le changement de centile de B à C</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Se soigner au quotidien</td>
+<td>−0,160</td>
+</tr>
+<tr class="even">
+<td>Faire ses courses</td>
+<td>−0,141</td>
+</tr>
+<tr class="odd">
+<td>Démarches et accompagnement social</td>
+<td>−0,002</td>
+</tr>
+<tr class="even">
+<td>Scolariser ses enfants</td>
+<td>0,204</td>
+</tr>
+<tr class="odd">
+<td>Soins hospitaliers</td>
+<td>0,375</td>
+</tr>
+<tr class="even">
+<td>Se déplacer</td>
+<td>0,503</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>Ce qui fait bouger les communes, c’est le transport et l’hôpital. Le changement de centile entre B et C est d’abord lié à l’éloignement de la gare (ρ = 0,50), puis à celui de l’hôpital (0,38) et de l’école (0,20). Il est en revanche lié négativement aux soins courants (−0,16) et aux courses (−0,14). Les communes loin d’une gare ou d’un hôpital reculent avec C, celles qui manquent surtout de commerces ou de médecins avancent.</p>
+<div id="tbl-mouvements-BC" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-mouvements-BC-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tableau&nbsp;13: Les huit communes qui montent le plus et les huit qui baissent le plus entre B et C
+</figcaption>
+<div aria-describedby="tbl-mouvements-BC-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Commune</th>
+<th>Centile B</th>
+<th>Centile C</th>
+<th>Changement</th>
+<th>Besoin le plus éloigné</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>L’Île-d’Yeu</td>
+<td>29,2</td>
+<td>89,3</td>
+<td>+60,1</td>
+<td>démarches et accompagnement social</td>
+</tr>
+<tr class="even">
+<td>Bonifacio</td>
+<td>18,8</td>
+<td>72,5</td>
+<td>+53,7</td>
+<td>se déplacer</td>
+</tr>
+<tr class="odd">
+<td>Mézières-en-Brenne</td>
+<td>25,5</td>
+<td>78,0</td>
+<td>+52,5</td>
+<td>scolariser ses enfants</td>
+</tr>
+<tr class="even">
+<td>Ouessant</td>
+<td>38,4</td>
+<td>89,9</td>
+<td>+51,5</td>
+<td>scolariser ses enfants</td>
+</tr>
+<tr class="odd">
+<td>Pontaumur</td>
+<td>20,7</td>
+<td>72,0</td>
+<td>+51,3</td>
+<td>se déplacer</td>
+</tr>
+<tr class="even">
+<td>Val-d’Isère</td>
+<td>34,5</td>
+<td>85,2</td>
+<td>+50,7</td>
+<td>démarches et accompagnement social</td>
+</tr>
+<tr class="odd">
+<td>Saintes-Maries-de-la-Mer</td>
+<td>27,2</td>
+<td>77,8</td>
+<td>+50,6</td>
+<td>scolariser ses enfants</td>
+</tr>
+<tr class="even">
+<td>Meyrueis</td>
+<td>20,0</td>
+<td>70,3</td>
+<td>+50,2</td>
+<td>se déplacer</td>
+</tr>
+<tr class="odd">
+<td>Ventenac</td>
+<td>89,0</td>
+<td>59,2</td>
+<td>−29,9</td>
+<td>se soigner au quotidien</td>
+</tr>
+<tr class="even">
+<td>Baulou</td>
+<td>70,6</td>
+<td>40,8</td>
+<td>−29,8</td>
+<td>démarches et accompagnement social</td>
+</tr>
+<tr class="odd">
+<td>Loreux</td>
+<td>83,0</td>
+<td>53,4</td>
+<td>−29,6</td>
+<td>faire ses courses</td>
+</tr>
+<tr class="even">
+<td>Sainte-Colombe</td>
+<td>62,0</td>
+<td>32,6</td>
+<td>−29,5</td>
+<td>faire ses courses</td>
+</tr>
+<tr class="odd">
+<td>Béard</td>
+<td>86,2</td>
+<td>56,9</td>
+<td>−29,3</td>
+<td>se soigner au quotidien</td>
+</tr>
+<tr class="even">
+<td>Louroux-de-Bouble</td>
+<td>76,8</td>
+<td>47,7</td>
+<td>−29,1</td>
+<td>soins hospitaliers</td>
+</tr>
+<tr class="odd">
+<td>Houéville</td>
+<td>77,0</td>
+<td>48,3</td>
+<td>−28,8</td>
+<td>se soigner au quotidien</td>
+</tr>
+<tr class="even">
+<td>Vierzy</td>
+<td>74,9</td>
+<td>46,4</td>
+<td>−28,5</td>
+<td>faire ses courses</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>Les plus fortes hausses (+50 à +60 centiles) sont des communes bien équipées sur place mais loin des grands réseaux : les îles (L’Île-d’Yeu, Ouessant), les bouts de territoire (Bonifacio, Saintes-Maries-de-la-Mer en Camargue, Val-d’Isère en fond de vallée) et de petits bourgs-centres ruraux (Mézières-en-Brenne, Pontaumur, Meyrueis). Avec 19 services, leurs commerces, médecins et écoles les classaient dans la moitié la mieux desservie. Avec six besoins, la distance à la gare, au lycée et à l’hôpital les fait passer dans le tiers le plus isolé. Pour une île ou un fond de vallée, c’est plutôt une correction juste.</p>
+<p>Les plus fortes baisses (environ −30 centiles) sont de petits villages (Ventenac, Baulou, Loreux, Béard…) dont le plus grand retard porte sur les soins courants, les courses ou les démarches, c’est-à-dire des services de proximité. Ils sont probablement moins loin d’une gare ou d’un hôpital que la moyenne. C les juge moins isolés que B, car le manque de services de proximité y pèse moins.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copié");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copié");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      const newWindowLabel = "(opens in a new tab)";
+      const newWindowNoteId = "quarto-ext-newwindow-label";
+      // Links reference one hidden label through aria-describedby, so the
+      // announcement never changes their accessible name.
+      var describeNewWindow = (link) => {
+        if (!window.document.getElementById(newWindowNoteId)) {
+          var newWindowNote = window.document.createElement("span");
+          newWindowNote.id = newWindowNoteId;
+          newWindowNote.hidden = true;
+          newWindowNote.textContent = newWindowLabel;
+          window.document.body.appendChild(newWindowNote);
+        }
+        var describedBy = (link.getAttribute("aria-describedby") || "").split(/\s+/).filter(Boolean);
+        if (!describedBy.includes(newWindowNoteId)) {
+          describedBy.push(newWindowNoteId);
+          link.setAttribute("aria-describedby", describedBy.join(" "));
+        }
+      }
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            describeNewWindow(link);
+          if (!link.classList.contains('no-external-icon')) {
+          }
+        }
+      }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
+          if (lineIds.length > 0) {
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            placeBand(gutterDiv, el, lastEl);
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Code défilable","output":"Sortie défilable"};
+  </script>
+<nav class="page-navigation" aria-label="Page">
+  <div class="nav-page nav-page-previous">
+      <a href="./04-facteurs-isolement.html" class="pagination-link" aria-label="Facteurs de l'isolement">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Facteurs de l’isolement</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./06-discussion-conclusion.html" class="pagination-link" aria-label="Discussion et conclusion">
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Discussion et conclusion</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/Sarahlaure/Projet-de-python-_-Isolement-communes/blob/main/05-comparaison-methodes.qmd" class="toc-action"><i class="bi bi-github"></i>Voir la source</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
